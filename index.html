@@ -213,11 +213,6 @@
             background: var(--bg-white);
         }
 
-        input.money-input {
-            text-align: right;
-            letter-spacing: 0.5px;
-        }
-
         .currency {
             position: absolute;
             right: 12px;
@@ -542,7 +537,7 @@
                         </span>
                     </label>
                     <div class="input-wrapper">
-                        <input type="text" id="propertyPrice" class="money-input" placeholder="1 500 000" value="1 500 000">
+                        <input type="number" id="propertyPrice" placeholder="1500000" step="10000" value="1500000">
                         <span class="currency">₽</span>
                     </div>
                 </div>
@@ -556,7 +551,7 @@
                         </span>
                     </label>
                     <div class="input-wrapper">
-                        <input type="text" id="monthlyRent" class="money-input" placeholder="30 000" value="30 000">
+                        <input type="number" id="monthlyRent" placeholder="30000" step="1000" value="30000">
                         <span class="currency">₽</span>
                     </div>
                 </div>
@@ -570,7 +565,7 @@
                         </span>
                     </label>
                     <div class="input-wrapper">
-                        <input type="text" id="managementCost" class="money-input" placeholder="3 000" value="3 000">
+                        <input type="number" id="managementCost" placeholder="3000" step="100" value="3000">
                         <span class="currency">₽</span>
                     </div>
                 </div>
@@ -584,7 +579,7 @@
                         </span>
                     </label>
                     <div class="input-wrapper">
-                        <input type="text" id="repairCost" class="money-input" placeholder="2 000" value="2 000">
+                        <input type="number" id="repairCost" placeholder="2000" step="100" value="2000">
                         <span class="currency">₽</span>
                     </div>
                 </div>
@@ -598,7 +593,7 @@
                         </span>
                     </label>
                     <div class="input-wrapper">
-                        <input type="text" id="taxesCost" class="money-input" placeholder="1 500" value="1 500">
+                        <input type="number" id="taxesCost" placeholder="1500" step="100" value="1500">
                         <span class="currency">₽</span>
                     </div>
                 </div>
@@ -612,7 +607,7 @@
                         </span>
                     </label>
                     <div class="input-wrapper">
-                        <input type="text" id="insuranceCost" class="money-input" placeholder="500" value="500">
+                        <input type="number" id="insuranceCost" placeholder="500" step="50" value="500">
                         <span class="currency">₽</span>
                     </div>
                 </div>
@@ -626,7 +621,7 @@
                         </span>
                     </label>
                     <div class="input-wrapper">
-                        <input type="text" id="utilitiesCost" class="money-input" placeholder="0" value="0">
+                        <input type="number" id="utilitiesCost" placeholder="0" step="100" value="0">
                         <span class="currency">₽</span>
                     </div>
                 </div>
@@ -1009,51 +1004,15 @@
         let calculations = [];
         let comparisonItems = [];
 
-        // Format number with spaces (e.g., 1500000 -> "1 500 000")
-        function formatMoney(value) {
-            if (!value && value !== 0) return '';
-            // Remove all non-digit characters
-            const numStr = String(value).replace(/\D/g, '');
-            if (!numStr) return '';
-            // Add spaces every 3 digits from right
-            return numStr.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
-        }
-
-        // Parse formatted money string to number (e.g., "1 500 000" -> 1500000)
-        function parseMoney(value) {
-            if (!value) return 0;
-            // Remove all non-digit characters and parse
-            const numStr = String(value).replace(/\D/g, '');
-            return parseFloat(numStr) || 0;
-        }
-
-        // Format input on change
-        function formatMoneyInput(input) {
-            const cursorPos = input.selectionStart;
-            const oldValue = input.value;
-            const oldLength = oldValue.length;
-            
-            const parsed = parseMoney(oldValue);
-            const formatted = formatMoney(parsed);
-            
-            input.value = formatted;
-            
-            // Adjust cursor position
-            const newLength = formatted.length;
-            const lengthDiff = newLength - oldLength;
-            const newCursorPos = Math.max(0, cursorPos + lengthDiff);
-            input.setSelectionRange(newCursorPos, newCursorPos);
-        }
-
         function getFormValues() {
             return {
-                propertyPrice: parseMoney(document.getElementById('propertyPrice').value),
-                monthlyRent: parseMoney(document.getElementById('monthlyRent').value),
-                managementCost: parseMoney(document.getElementById('managementCost').value),
-                repairCost: parseMoney(document.getElementById('repairCost').value),
-                taxesCost: parseMoney(document.getElementById('taxesCost').value),
-                insuranceCost: parseMoney(document.getElementById('insuranceCost').value),
-                utilitiesCost: parseMoney(document.getElementById('utilitiesCost').value),
+                propertyPrice: parseFloat(document.getElementById('propertyPrice').value) || 0,
+                monthlyRent: parseFloat(document.getElementById('monthlyRent').value) || 0,
+                managementCost: parseFloat(document.getElementById('managementCost').value) || 0,
+                repairCost: parseFloat(document.getElementById('repairCost').value) || 0,
+                taxesCost: parseFloat(document.getElementById('taxesCost').value) || 0,
+                insuranceCost: parseFloat(document.getElementById('insuranceCost').value) || 0,
+                utilitiesCost: parseFloat(document.getElementById('utilitiesCost').value) || 0,
             };
         }
 
@@ -1202,13 +1161,13 @@
         function loadFromHistory(id) {
             const calc = calculations.find(c => c.id === id);
             if (calc) {
-                document.getElementById('propertyPrice').value = formatMoney(calc.propertyPrice);
-                document.getElementById('monthlyRent').value = formatMoney(calc.monthlyRent);
-                document.getElementById('managementCost').value = formatMoney(calc.managementCost);
-                document.getElementById('repairCost').value = formatMoney(calc.repairCost);
-                document.getElementById('taxesCost').value = formatMoney(calc.taxesCost);
-                document.getElementById('insuranceCost').value = formatMoney(calc.insuranceCost);
-                document.getElementById('utilitiesCost').value = formatMoney(calc.utilitiesCost);
+                document.getElementById('propertyPrice').value = calc.propertyPrice;
+                document.getElementById('monthlyRent').value = calc.monthlyRent;
+                document.getElementById('managementCost').value = calc.managementCost;
+                document.getElementById('repairCost').value = calc.repairCost;
+                document.getElementById('taxesCost').value = calc.taxesCost;
+                document.getElementById('insuranceCost').value = calc.insuranceCost;
+                document.getElementById('utilitiesCost').value = calc.utilitiesCost;
                 displayResults(calc);
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
@@ -1230,11 +1189,11 @@
         }
 
         function clearForm() {
-            document.getElementById('propertyPrice').value = '1 500 000';
-            document.getElementById('monthlyRent').value = '30 000';
-            document.getElementById('managementCost').value = '3 000';
-            document.getElementById('repairCost').value = '2 000';
-            document.getElementById('taxesCost').value = '1 500';
+            document.getElementById('propertyPrice').value = '1500000';
+            document.getElementById('monthlyRent').value = '30000';
+            document.getElementById('managementCost').value = '3000';
+            document.getElementById('repairCost').value = '2000';
+            document.getElementById('taxesCost').value = '1500';
             document.getElementById('insuranceCost').value = '500';
             document.getElementById('utilitiesCost').value = '0';
             const t = getTranslation('results.noData');
@@ -1326,20 +1285,9 @@
 
         // === KEYBOARD EVENTS ===
         document.addEventListener('DOMContentLoaded', function() {
-            // Setup money formatting for all money inputs
-            const moneyInputs = document.querySelectorAll('.money-input');
-            moneyInputs.forEach(input => {
-                // Format on input
-                input.addEventListener('input', function(e) {
-                    formatMoneyInput(this);
-                });
-                
-                // Format on blur (when user leaves the field)
-                input.addEventListener('blur', function(e) {
-                    formatMoneyInput(this);
-                });
-                
-                // Handle Enter key
+            // Handle Enter key only on input fields
+            const inputs = document.querySelectorAll('input[type="number"], input[type="text"]');
+            inputs.forEach(input => {
                 input.addEventListener('keypress', function(e) {
                     if (e.key === 'Enter') {
                         e.preventDefault();

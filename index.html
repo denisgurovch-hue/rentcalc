@@ -160,6 +160,75 @@
             border-color: var(--primary);
         }
 
+        /* Mode toggle (Basic/Pro) */
+        .mode-toggle {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            background: var(--bg-white);
+            border: 2px solid var(--border);
+            border-radius: 50px;
+            padding: 4px;
+        }
+
+        .mode-button {
+            background: transparent;
+            border: none;
+            border-radius: 50px;
+            padding: 6px 16px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-light);
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .mode-button:hover {
+            color: var(--text-dark);
+        }
+
+        .mode-button.active {
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
+            color: white;
+        }
+
+        /* Checkbox styling */
+        .checkbox-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: var(--primary);
+        }
+
+        /* Pro mode sections */
+        .pro-section {
+            display: none;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid var(--border);
+        }
+
+        .pro-section.active {
+            display: block;
+        }
+
+        /* Advanced metrics card */
+        .advanced-metrics {
+            margin-top: 20px;
+            padding: 20px;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(16, 185, 129, 0.05) 100%);
+            border-radius: 12px;
+            border: 2px solid var(--border);
+        }
+
         .main-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -389,6 +458,10 @@
             color: var(--secondary);
         }
 
+        .result-value.success {
+            color: var(--success);
+        }
+
         .history-list {
             max-height: 300px;
             overflow-y: auto;
@@ -540,6 +613,10 @@
                 <p data-i18n="app.subtitle">Калькулятор доходности аренды</p>
             </div>
             <div class="header-controls">
+                <div class="mode-toggle">
+                    <button class="mode-button active" id="mode-basic" onclick="toggleMode('basic')" data-i18n="mode.basic">Базовый</button>
+                    <button class="mode-button" id="mode-pro" onclick="toggleMode('pro')" data-i18n="mode.pro">Pro</button>
+                </div>
                 <div class="lang-buttons">
                     <button class="lang-button active" id="lang-ru" onclick="changeLanguage('ru')">🇷🇺 Русский</button>
                     <button class="lang-button" id="lang-en" onclick="changeLanguage('en')">🇬🇧 English</button>
@@ -653,6 +730,93 @@
                     </div>
                 </div>
 
+                <!-- PRO MODE: Ипотека -->
+                <div class="pro-section" id="mortgage-section">
+                    <h3 style="font-size: 1.2rem; margin-bottom: 16px; color: var(--secondary);" data-i18n="mortgage.title">🏦 Ипотека</h3>
+                    
+                    <div class="checkbox-wrapper">
+                        <input type="checkbox" id="useMortgage" onchange="toggleMortgageFields()">
+                        <label for="useMortgage" style="margin: 0; cursor: pointer;" data-i18n="mortgage.useMortgage">Использую ипотеку</label>
+                    </div>
+
+                    <div id="mortgage-fields" style="display: none;">
+                        <div class="form-group">
+                            <label>
+                                <span data-i18n="mortgage.downPayment">Первоначальный взнос</span>
+                                <span class="help-icon">
+                                    ?
+                                    <span class="tooltip" data-i18n="mortgage.downPaymentTooltip">Сумма первоначального взноса в рублях</span>
+                                </span>
+                            </label>
+                            <div class="input-wrapper">
+                                <input type="text" id="downPayment" class="money-input" placeholder="300 000" value="300 000">
+                                <span class="currency">₽</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>
+                                <span data-i18n="mortgage.interestRate">Процентная ставка, годовая</span>
+                                <span class="help-icon">
+                                    ?
+                                    <span class="tooltip" data-i18n="mortgage.interestRateTooltip">Годовая процентная ставка по ипотеке (например, 10%)</span>
+                                </span>
+                            </label>
+                            <div class="input-wrapper">
+                                <input type="number" id="interestRate" step="0.1" placeholder="10" value="10" min="0" max="100">
+                                <span class="currency">%</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>
+                                <span data-i18n="mortgage.loanTerm">Срок кредита</span>
+                                <span class="help-icon">
+                                    ?
+                                    <span class="tooltip" data-i18n="mortgage.loanTermTooltip">Срок кредита в годах</span>
+                                </span>
+                            </label>
+                            <div class="input-wrapper">
+                                <input type="number" id="loanTerm" step="1" placeholder="20" value="20" min="1" max="30">
+                                <span class="currency" style="right: 40px;">лет</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PRO MODE: Продвинутые метрики (NPV) -->
+                <div class="pro-section" id="advanced-metrics-section">
+                    <h3 style="font-size: 1.2rem; margin-bottom: 16px; color: var(--secondary);" data-i18n="advanced.title">📊 Продвинутые метрики</h3>
+                    
+                    <div class="form-group">
+                        <label>
+                            <span data-i18n="advanced.investmentHorizon">Горизонт инвестиций</span>
+                            <span class="help-icon">
+                                ?
+                                <span class="tooltip" data-i18n="advanced.investmentHorizonTooltip">Период для расчёта NPV в годах</span>
+                            </span>
+                        </label>
+                        <div class="input-wrapper">
+                            <input type="number" id="investmentHorizon" step="1" placeholder="10" value="10" min="1" max="50">
+                            <span class="currency" style="right: 40px;">лет</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <span data-i18n="advanced.discountRate">Ставка дисконтирования</span>
+                            <span class="help-icon">
+                                ?
+                                <span class="tooltip" data-i18n="advanced.discountRateTooltip">Ставка дисконтирования для расчёта NPV (например, 10%)</span>
+                            </span>
+                        </label>
+                        <div class="input-wrapper">
+                            <input type="number" id="discountRate" step="0.1" placeholder="10" value="10" min="0" max="100">
+                            <span class="currency">%</span>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="buttons-group">
                     <button class="btn-primary" onclick="calculateOnButtonClick()" data-i18n="form.calculate">💰 Рассчитать</button>
                     <button class="btn-secondary" onclick="clearForm()" data-i18n="form.clear">🔄 Очистить</button>
@@ -671,6 +835,12 @@
                     <div class="no-data" data-i18n="results.noData">
                         Введи параметры и нажми "Рассчитать"
                     </div>
+                </div>
+
+                <!-- PRO MODE: Продвинутые результаты -->
+                <div id="advanced-results-container" class="advanced-metrics" style="display: none;">
+                    <h3 style="font-size: 1.1rem; margin-bottom: 16px; color: var(--secondary);" data-i18n="advanced.resultsTitle">📈 Продвинутые метрики</h3>
+                    <div id="advanced-results-content"></div>
                 </div>
 
                 <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border);">
@@ -742,7 +912,7 @@
         const translations = {
             ru: {
                 app: {
-                    title: "🏠 RentCalc",
+                    title: "RentCalc",
                     subtitle: "Калькулятор доходности аренды"
                 },
                 form: {
@@ -824,11 +994,40 @@
                 },
                 errors: {
                     invalidInput: "⚠️ Укажи цену и аренду (оба поля > 0)"
+                },
+                mode: {
+                    basic: "Базовый",
+                    pro: "Pro"
+                },
+                mortgage: {
+                    title: "🏦 Ипотека",
+                    useMortgage: "Использую ипотеку",
+                    downPayment: "Первоначальный взнос",
+                    downPaymentTooltip: "Сумма первоначального взноса в рублях",
+                    interestRate: "Процентная ставка, годовая",
+                    interestRateTooltip: "Годовая процентная ставка по ипотеке (например, 10%)",
+                    loanTerm: "Срок кредита",
+                    loanTermTooltip: "Срок кредита в годах",
+                    monthlyPayment: "Месячный платёж по ипотеке",
+                    monthlyPaymentTooltip: "Аннуитетный платёж по ипотеке"
+                },
+                advanced: {
+                    title: "📊 Продвинутые метрики",
+                    resultsTitle: "📈 Продвинутые метрики",
+                    investmentHorizon: "Горизонт инвестиций",
+                    investmentHorizonTooltip: "Период для расчёта NPV в годах",
+                    discountRate: "Ставка дисконтирования",
+                    discountRateTooltip: "Ставка дисконтирования для расчёта NPV (например, 10%)",
+                    monthlyNetIncomeAfterMortgage: "Месячный чистый доход после ипотеки",
+                    yearlyCashFlow: "Годовой cash flow",
+                    cashOnCashReturn: "Cash-on-cash return",
+                    npv: "NPV (чистая приведённая стоимость)",
+                    npvTooltip: "Чистая приведённая стоимость инвестиции"
                 }
             },
             en: {
                 app: {
-                    title: "🏠 RentCalc",
+                    title: "RentCalc",
                     subtitle: "Rental Yield Calculator"
                 },
                 form: {
@@ -910,6 +1109,35 @@
                 },
                 errors: {
                     invalidInput: "⚠️ Enter price and rent (both fields > 0)"
+                },
+                mode: {
+                    basic: "Basic",
+                    pro: "Pro"
+                },
+                mortgage: {
+                    title: "🏦 Mortgage",
+                    useMortgage: "Using mortgage",
+                    downPayment: "Down payment",
+                    downPaymentTooltip: "Down payment amount in rubles",
+                    interestRate: "Interest rate, annual",
+                    interestRateTooltip: "Annual mortgage interest rate (e.g., 10%)",
+                    loanTerm: "Loan term",
+                    loanTermTooltip: "Loan term in years",
+                    monthlyPayment: "Monthly mortgage payment",
+                    monthlyPaymentTooltip: "Annuity mortgage payment"
+                },
+                advanced: {
+                    title: "📊 Advanced Metrics",
+                    resultsTitle: "📈 Advanced Metrics",
+                    investmentHorizon: "Investment horizon",
+                    investmentHorizonTooltip: "Period for NPV calculation in years",
+                    discountRate: "Discount rate",
+                    discountRateTooltip: "Discount rate for NPV calculation (e.g., 10%)",
+                    monthlyNetIncomeAfterMortgage: "Monthly net income after mortgage",
+                    yearlyCashFlow: "Annual cash flow",
+                    cashOnCashReturn: "Cash-on-cash return",
+                    npv: "NPV (Net Present Value)",
+                    npvTooltip: "Net present value of investment"
                 }
             }
         };
@@ -1027,6 +1255,82 @@
         document.documentElement.setAttribute('data-theme', savedTheme);
         updateThemeIcon(savedTheme);
 
+        // === MODE MANAGEMENT ===
+        let currentMode = 'basic'; // 'basic' or 'pro'
+
+        function toggleMode(mode) {
+            currentMode = mode;
+            try {
+                localStorage.setItem('rentcalc_mode', mode);
+            } catch (e) {
+                console.warn('Failed to save mode to localStorage:', e);
+            }
+            
+            // Update mode buttons
+            document.querySelectorAll('.mode-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            const modeButton = document.getElementById(`mode-${mode}`);
+            if (modeButton) {
+                modeButton.classList.add('active');
+            }
+            
+            // Show/hide Pro sections
+            const proSections = document.querySelectorAll('.pro-section');
+            proSections.forEach(section => {
+                if (mode === 'pro') {
+                    section.classList.add('active');
+                } else {
+                    section.classList.remove('active');
+                }
+            });
+            
+            // Hide/show mortgage fields based on checkbox
+            if (mode === 'pro') {
+                toggleMortgageFields();
+            } else {
+                const mortgageFields = document.getElementById('mortgage-fields');
+                if (mortgageFields) {
+                    mortgageFields.style.display = 'none';
+                }
+            }
+            
+            // Hide advanced results in basic mode
+            if (mode === 'basic') {
+                const advancedResults = document.getElementById('advanced-results-container');
+                if (advancedResults) {
+                    advancedResults.style.display = 'none';
+                }
+            } else {
+                // If in Pro mode and there are results, recalculate if mortgage is enabled
+                const resultsContainer = document.getElementById('results-container');
+                if (resultsContainer && resultsContainer.querySelector('.result-item')) {
+                    // Trigger recalculation if there are existing results
+                    const useMortgage = document.getElementById('useMortgage')?.checked;
+                    if (useMortgage) {
+                        // Results will be recalculated on next calculate() call
+                    }
+                }
+            }
+        }
+
+        function toggleMortgageFields() {
+            const checkbox = document.getElementById('useMortgage');
+            const fields = document.getElementById('mortgage-fields');
+            if (checkbox && fields) {
+                fields.style.display = checkbox.checked ? 'block' : 'none';
+            }
+        }
+
+        // Load saved mode
+        try {
+            const savedMode = localStorage.getItem('rentcalc_mode') || 'basic';
+            currentMode = savedMode;
+        } catch (e) {
+            console.warn('Failed to load mode from localStorage:', e);
+            currentMode = 'basic';
+        }
+
         // === CALCULATION LOGIC ===
         let calculations = [];
         let comparisonItems = [];
@@ -1068,7 +1372,7 @@
         }
 
         function getFormValues() {
-            return {
+            const values = {
                 propertyPrice: parseMoney(document.getElementById('propertyPrice').value),
                 monthlyRent: parseMoney(document.getElementById('monthlyRent').value),
                 managementCost: parseMoney(document.getElementById('managementCost').value),
@@ -1077,6 +1381,84 @@
                 insuranceCost: parseMoney(document.getElementById('insuranceCost').value),
                 utilitiesCost: parseMoney(document.getElementById('utilitiesCost').value),
             };
+            
+            // Pro mode: mortgage values
+            if (currentMode === 'pro') {
+                values.useMortgage = document.getElementById('useMortgage')?.checked || false;
+                values.downPayment = parseMoney(document.getElementById('downPayment')?.value || '0');
+                values.interestRate = parseFloat(document.getElementById('interestRate')?.value || '0');
+                values.loanTerm = parseFloat(document.getElementById('loanTerm')?.value || '0');
+                values.investmentHorizon = parseFloat(document.getElementById('investmentHorizon')?.value || '10');
+                values.discountRate = parseFloat(document.getElementById('discountRate')?.value || '10');
+            }
+            
+            return values;
+        }
+
+        // === MORTGAGE CALCULATIONS ===
+        /**
+         * Calculate monthly mortgage payment using annuity formula
+         * M = L * (i * (1 + i)^n) / ((1 + i)^n - 1)
+         * where:
+         * L = loan amount (propertyPrice - downPayment)
+         * i = monthly interest rate (annualRate / 12 / 100)
+         * n = number of months (loanTerm * 12)
+         */
+        function calculateMortgagePayment(loanAmount, annualRate, loanTermYears) {
+            if (loanAmount <= 0 || annualRate <= 0 || loanTermYears <= 0) {
+                return 0;
+            }
+            
+            const monthlyRate = annualRate / 12 / 100; // Convert to decimal
+            const numMonths = loanTermYears * 12;
+            
+            if (monthlyRate === 0) {
+                // No interest, just divide loan by months
+                return loanAmount / numMonths;
+            }
+            
+            const numerator = monthlyRate * Math.pow(1 + monthlyRate, numMonths);
+            const denominator = Math.pow(1 + monthlyRate, numMonths) - 1;
+            
+            return loanAmount * (numerator / denominator);
+        }
+
+        /**
+         * Calculate cash-on-cash return
+         * cashOnCash = (yearlyCashFlow / initialCash) * 100
+         */
+        function calculateCashOnCash(yearlyCashFlow, initialCash) {
+            if (initialCash <= 0) return 0;
+            return (yearlyCashFlow / initialCash) * 100;
+        }
+
+        /**
+         * Calculate NPV (Net Present Value)
+         * NPV = -initialCash + sum_{t=1..T}(CFt / (1 + k)^t) + TerminalValue / (1 + k)^T
+         * where:
+         * initialCash = downPayment
+         * CFt = yearlyCashFlow (constant for each year)
+         * k = discount rate (as decimal)
+         * T = investment horizon
+         * TerminalValue = propertyPrice (current value, no growth)
+         */
+        function calculateNPV(initialCash, yearlyCashFlow, discountRate, investmentHorizon, terminalValue) {
+            if (investmentHorizon <= 0) return 0;
+            
+            const k = discountRate / 100; // Convert to decimal
+            let npv = -initialCash; // Initial investment (negative cash flow)
+            
+            // Sum of discounted cash flows for each year
+            for (let t = 1; t <= investmentHorizon; t++) {
+                npv += yearlyCashFlow / Math.pow(1 + k, t);
+            }
+            
+            // Add terminal value (property value at end of horizon)
+            if (terminalValue > 0) {
+                npv += terminalValue / Math.pow(1 + k, investmentHorizon);
+            }
+            
+            return npv;
         }
 
         function calculate() {
@@ -1103,7 +1485,7 @@
             const netROI = (yearlyNetIncome / values.propertyPrice) * 100;
             const paybackPeriod = yearlyNetIncome > 0 ? values.propertyPrice / yearlyNetIncome : Infinity;
 
-            return {
+            const result = {
                 ...values,
                 totalMonthlyExpenses,
                 monthlyNetIncome,
@@ -1116,6 +1498,39 @@
                 timestamp: new Date().toLocaleString(currentLanguage === 'ru' ? 'ru-RU' : 'en-US'),
                 id: Date.now()
             };
+
+            // Pro mode: Calculate mortgage and advanced metrics
+            if (currentMode === 'pro' && values.useMortgage) {
+                const loanAmount = values.propertyPrice - values.downPayment;
+                const monthlyMortgagePayment = calculateMortgagePayment(
+                    loanAmount,
+                    values.interestRate,
+                    values.loanTerm
+                );
+                
+                const monthlyNetIncomeAfterMortgage = monthlyNetIncome - monthlyMortgagePayment;
+                const yearlyCashFlow = monthlyNetIncomeAfterMortgage * 12;
+                const cashOnCash = calculateCashOnCash(yearlyCashFlow, values.downPayment);
+                
+                // NPV calculation
+                const npv = calculateNPV(
+                    values.downPayment,
+                    yearlyCashFlow,
+                    values.discountRate,
+                    values.investmentHorizon,
+                    values.propertyPrice // Terminal value (current price, no growth)
+                );
+                
+                // Add Pro metrics to result
+                result.monthlyMortgagePayment = monthlyMortgagePayment;
+                result.loanAmount = loanAmount;
+                result.monthlyNetIncomeAfterMortgage = monthlyNetIncomeAfterMortgage;
+                result.yearlyCashFlow = yearlyCashFlow;
+                result.cashOnCash = cashOnCash;
+                result.npv = npv;
+            }
+
+            return result;
         }
 
         function displayResults(calc) {
@@ -1123,8 +1538,11 @@
 
             const locale = currentLanguage === 'ru' ? 'ru-RU' : 'en-US';
             const t = translations[currentLanguage].results;
+            const tMortgage = translations[currentLanguage].mortgage;
+            const tAdvanced = translations[currentLanguage].advanced;
 
-            const resultsHTML = `
+            // Base results (always shown)
+            let resultsHTML = `
                 <div class="alert alert-success">
                     ${t.success}
                 </div>
@@ -1175,6 +1593,47 @@
             `;
 
             document.getElementById('results-container').innerHTML = resultsHTML;
+
+            // Pro mode: Display advanced metrics
+            if (currentMode === 'pro' && calc.useMortgage && calc.monthlyMortgagePayment !== undefined) {
+                const advancedResultsHTML = `
+                    <div class="results-grid">
+                        <div class="result-item">
+                            <div class="result-label">${tMortgage.monthlyPayment}</div>
+                            <div class="result-value" style="color: var(--secondary);">${Math.round(calc.monthlyMortgagePayment).toLocaleString(locale)} ₽</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-label">${tAdvanced.monthlyNetIncomeAfterMortgage}</div>
+                            <div class="result-value ${calc.monthlyNetIncomeAfterMortgage < 0 ? 'error' : ''}">${Math.round(calc.monthlyNetIncomeAfterMortgage).toLocaleString(locale)} ₽</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-label">${tAdvanced.yearlyCashFlow}</div>
+                            <div class="result-value ${calc.yearlyCashFlow < 0 ? 'error' : ''}">${Math.round(calc.yearlyCashFlow).toLocaleString(locale)} ₽</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-label">${tAdvanced.cashOnCashReturn}</div>
+                            <div class="result-value ${calc.cashOnCash < 0 ? 'error' : ''}">${calc.cashOnCash.toFixed(2)}%</div>
+                        </div>
+                        <div class="result-item" style="grid-column: 1 / -1;">
+                            <div class="result-label">${tAdvanced.npv}</div>
+                            <div class="result-value ${calc.npv < 0 ? 'error' : 'success'}" style="font-size: 2rem;">${Math.round(calc.npv).toLocaleString(locale)} ₽</div>
+                        </div>
+                    </div>
+                `;
+
+                const advancedContainer = document.getElementById('advanced-results-container');
+                const advancedContent = document.getElementById('advanced-results-content');
+                if (advancedContainer && advancedContent) {
+                    advancedContent.innerHTML = advancedResultsHTML;
+                    advancedContainer.style.display = 'block';
+                }
+            } else {
+                // Hide advanced results if not in Pro mode or mortgage not used
+                const advancedContainer = document.getElementById('advanced-results-container');
+                if (advancedContainer) {
+                    advancedContainer.style.display = 'none';
+                }
+            }
         }
 
         function calculateOnButtonClick() {
@@ -1231,6 +1690,28 @@
                 document.getElementById('taxesCost').value = formatMoney(calc.taxesCost);
                 document.getElementById('insuranceCost').value = formatMoney(calc.insuranceCost);
                 document.getElementById('utilitiesCost').value = formatMoney(calc.utilitiesCost);
+                
+                // Load Pro mode values if they exist
+                if (calc.useMortgage !== undefined && currentMode === 'pro') {
+                    document.getElementById('useMortgage').checked = calc.useMortgage;
+                    if (calc.downPayment !== undefined) {
+                        document.getElementById('downPayment').value = formatMoney(calc.downPayment);
+                    }
+                    if (calc.interestRate !== undefined) {
+                        document.getElementById('interestRate').value = calc.interestRate;
+                    }
+                    if (calc.loanTerm !== undefined) {
+                        document.getElementById('loanTerm').value = calc.loanTerm;
+                    }
+                    if (calc.investmentHorizon !== undefined) {
+                        document.getElementById('investmentHorizon').value = calc.investmentHorizon;
+                    }
+                    if (calc.discountRate !== undefined) {
+                        document.getElementById('discountRate').value = calc.discountRate;
+                    }
+                    toggleMortgageFields();
+                }
+                
                 displayResults(calc);
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
@@ -1395,6 +1876,9 @@
                 console.warn('Failed to load comparison from localStorage:', e);
             }
 
+            // Initialize mode
+            toggleMode(currentMode);
+            
             // Initialize language and translations after page load
             document.documentElement.setAttribute('lang', currentLanguage);
             // Update language buttons

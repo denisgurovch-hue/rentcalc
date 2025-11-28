@@ -855,9 +855,37 @@ button {
     }
 
     nav {
-        flex-direction: column;
+        order: 3;
+        width: 100%;
+        margin-top: 16px;
+        flex-direction: row;
+        justify-content: center;
         gap: 12px;
-        align-items: flex-start;
+    }
+
+    .header-top {
+        flex-wrap: wrap;
+    }
+
+    .header-logo {
+        order: 1;
+    }
+
+    .header-controls {
+        order: 2;
+    }
+
+    nav a {
+        flex: 1;
+        text-align: center;
+        padding: 10px;
+        background: var(--bg-light);
+        border: 1px solid var(--border);
+    }
+
+    nav a.active {
+        background: rgba(16, 185, 129, 0.1);
+        border-color: var(--primary);
     }
 }
 

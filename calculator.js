@@ -27,7 +27,21 @@ const translations = {
             utilitiesCostTooltip: "Если ты платишь вместо арендатора",
             calculate: "💰 Рассчитать",
             clear: "🔄 Очистить",
-            hint: "💡 Подсказка: нажми Enter или кнопку \"Рассчитать\""
+            hint: "💡 Подсказка: нажми Enter или кнопку \"Рассчитать\"",
+            mortgageTitle: "🏦 Ипотека",
+            useMortgage: "Использовать ипотеку",
+            downPayment: "Первоначальный взнос",
+            downPaymentTooltip: "Сумма собственных средств",
+            interestRate: "Ставка (%)",
+            loanTerm: "Срок (лет)",
+            npvTitle: "📈 Инвестиционный анализ (NPV)",
+            investmentHorizon: "Горизонт (лет)",
+            discountRate: "Дисконт (%)",
+            discountRateTooltip: "Ставка дисконтирования"
+        },
+        mode: {
+            basic: "Базовый",
+            pro: "Pro"
         },
         results: {
             title: "📈 Результаты",
@@ -48,7 +62,12 @@ const translations = {
             perMonth: "/ месяц",
             addToComparison: "➕ Добавить в сравнение",
             impossible: "Невозможно",
-            years: "лет"
+            years: "лет",
+            mortgagePayment: "Платёж по ипотеке",
+            netIncomeAfterMortgage: "Чистый доход (после ипотеки)",
+            cashFlow: "Денежный поток (год)",
+            cashOnCash: "Cash-on-Cash Return",
+            npv: "NPV (Чистая приведенная стоимость)"
         },
         history: {
             title: "📚 История расчётов",
@@ -118,7 +137,21 @@ const translations = {
             utilitiesCostTooltip: "If you pay instead of the tenant",
             calculate: "💰 Calculate",
             clear: "🔄 Clear",
-            hint: "💡 Tip: press Enter or click \"Calculate\""
+            hint: "💡 Tip: press Enter or click \"Calculate\"",
+            mortgageTitle: "🏦 Mortgage",
+            useMortgage: "Use Mortgage",
+            downPayment: "Down Payment",
+            downPaymentTooltip: "Initial cash investment",
+            interestRate: "Rate (%)",
+            loanTerm: "Term (years)",
+            npvTitle: "📈 Investment Analysis (NPV)",
+            investmentHorizon: "Horizon (years)",
+            discountRate: "Discount (%)",
+            discountRateTooltip: "Discount Rate"
+        },
+        mode: {
+            basic: "Basic",
+            pro: "Pro"
         },
         results: {
             title: "📈 Results",
@@ -139,7 +172,12 @@ const translations = {
             perMonth: "/ month",
             addToComparison: "➕ Add to Comparison",
             impossible: "Impossible",
-            years: "years"
+            years: "years",
+            mortgagePayment: "Mortgage Payment",
+            netIncomeAfterMortgage: "Net Income (after mortgage)",
+            cashFlow: "Cash Flow (yearly)",
+            cashOnCash: "Cash-on-Cash Return",
+            npv: "NPV (Net Present Value)"
         },
         history: {
             title: "📚 Calculation History",
@@ -300,6 +338,50 @@ updateThemeIcon(savedTheme);
 // === CALCULATION LOGIC ===
 let calculations = [];
 let comparisonItems = [];
+let isProMode = false;
+
+function toggleMode() {
+    isProMode = document.getElementById('modeToggle').checked;
+    const proFields = document.getElementById('pro-fields');
+    if (isProMode) {
+        proFields.classList.remove('hidden');
+    } else {
+        proFields.classList.add('hidden');
+    }
+    // Re-calculate if needed or just update UI
+}
+
+function toggleMortgageFields() {
+    const useMortgage = document.getElementById('useMortgage').checked;
+    const mortgageDetails = document.getElementById('mortgage-details');
+    if (useMortgage) {
+        mortgageDetails.classList.remove('hidden');
+    } else {
+        mortgageDetails.classList.add('hidden');
+    }
+}
+
+function calculateMortgage(principal, rate, termYears) {
+    if (principal <= 0 || rate <= 0 || termYears <= 0) return 0;
+    const monthlyRate = rate / 100 / 12;
+    const numberOfPayments = termYears * 12;
+    return principal * (monthlyRate * Math.pow(1 + monthlyRate, numberOfPayments)) / (Math.pow(1 + monthlyRate, numberOfPayments) - 1);
+}
+
+function calculateNPV(initialCash, yearlyCashFlow, horizonYears, discountRate, terminalValue) {
+    let npv = -initialCash;
+    const rate = discountRate / 100;
+
+    for (let t = 1; t <= horizonYears; t++) {
+        npv += yearlyCashFlow / Math.pow(1 + rate, t);
+    }
+
+    if (terminalValue) {
+        npv += terminalValue / Math.pow(1 + rate, horizonYears);
+    }
+
+    return npv;
+}
 
 // Format number with spaces (e.g., 1500000 -> "1 500 000")
 function formatMoney(value) {
@@ -346,6 +428,13 @@ function getFormValues() {
         taxesCost: parseMoney(document.getElementById('taxesCost').value),
         insuranceCost: parseMoney(document.getElementById('insuranceCost').value),
         utilitiesCost: parseMoney(document.getElementById('utilitiesCost').value),
+        // Pro fields
+        useMortgage: document.getElementById('useMortgage').checked,
+        downPayment: parseMoney(document.getElementById('downPayment').value),
+        interestRate: parseFloat(document.getElementById('interestRate').value) || 0,
+        loanTerm: parseFloat(document.getElementById('loanTerm').value) || 0,
+        investmentHorizon: parseFloat(document.getElementById('investmentHorizon').value) || 10,
+        discountRate: parseFloat(document.getElementById('discountRate').value) || 10
     };
 }
 
@@ -373,6 +462,31 @@ function calculate() {
     const netROI = (yearlyNetIncome / values.propertyPrice) * 100;
     const paybackPeriod = yearlyNetIncome > 0 ? values.propertyPrice / yearlyNetIncome : Infinity;
 
+    // Pro Mode Calculations
+    let mortgagePayment = 0;
+    let netIncomeAfterMortgage = monthlyNetIncome;
+    let yearlyCashFlow = yearlyNetIncome;
+    let cashOnCash = 0;
+    let npv = 0;
+    let loanAmount = 0;
+
+    if (isProMode) {
+        if (values.useMortgage) {
+            loanAmount = values.propertyPrice - values.downPayment;
+            mortgagePayment = calculateMortgage(loanAmount, values.interestRate, values.loanTerm);
+            netIncomeAfterMortgage = monthlyNetIncome - mortgagePayment;
+            yearlyCashFlow = netIncomeAfterMortgage * 12;
+
+            if (values.downPayment > 0) {
+                cashOnCash = (yearlyCashFlow / values.downPayment) * 100;
+            }
+        }
+
+        // NPV
+        const initialInvestment = values.useMortgage ? values.downPayment : values.propertyPrice;
+        npv = calculateNPV(initialInvestment, yearlyCashFlow, values.investmentHorizon, values.discountRate, values.propertyPrice);
+    }
+
     return {
         ...values,
         totalMonthlyExpenses,
@@ -383,6 +497,13 @@ function calculate() {
         grossROI,
         netROI,
         paybackPeriod,
+        // Pro metrics
+        isProMode,
+        mortgagePayment,
+        netIncomeAfterMortgage,
+        yearlyCashFlow,
+        cashOnCash,
+        npv,
         timestamp: new Date().toLocaleString(currentLanguage === 'ru' ? 'ru-RU' : 'en-US'),
         id: Date.now()
     };
@@ -393,6 +514,38 @@ function displayResults(calc) {
 
     const locale = currentLanguage === 'ru' ? 'ru-RU' : 'en-US';
     const t = translations[currentLanguage].results;
+
+    let proResultsHTML = '';
+    if (calc.isProMode) {
+        proResultsHTML = `
+            <div class="divider"></div>
+            <h3 style="margin-bottom: 16px; font-size: 1.1rem;">Pro Metrics</h3>
+            <div class="results-grid">
+                ${calc.useMortgage ? `
+                <div class="result-item">
+                    <div class="result-label">${t.mortgagePayment}</div>
+                    <div class="result-value" style="color: var(--warning);">${Math.round(calc.mortgagePayment).toLocaleString(locale)} ₽</div>
+                </div>
+                <div class="result-item">
+                    <div class="result-label">${t.netIncomeAfterMortgage}</div>
+                    <div class="result-value ${calc.netIncomeAfterMortgage < 0 ? 'error' : 'success'}">${Math.round(calc.netIncomeAfterMortgage).toLocaleString(locale)} ₽</div>
+                </div>
+                <div class="result-item">
+                    <div class="result-label">${t.cashFlow}</div>
+                    <div class="result-value ${calc.yearlyCashFlow < 0 ? 'error' : 'success'}">${Math.round(calc.yearlyCashFlow).toLocaleString(locale)} ₽</div>
+                </div>
+                <div class="result-item">
+                    <div class="result-label">${t.cashOnCash}</div>
+                    <div class="result-value ${calc.cashOnCash < 0 ? 'error' : 'success'}">${calc.cashOnCash.toFixed(2)}%</div>
+                </div>
+                ` : ''}
+                <div class="result-item" style="grid-column: 1 / -1;">
+                    <div class="result-label">${t.npv}</div>
+                    <div class="result-value ${calc.npv < 0 ? 'error' : 'success'}">${Math.round(calc.npv).toLocaleString(locale)} ₽</div>
+                </div>
+            </div>
+        `;
+    }
 
     const resultsHTML = `
         <div class="alert alert-success">
@@ -425,6 +578,8 @@ function displayResults(calc) {
                 <div class="result-value ${calc.paybackPeriod === Infinity || calc.paybackPeriod < 0 ? 'error' : calc.paybackPeriod > 30 ? 'warning' : 'info'}">${calc.paybackPeriod === Infinity ? '∞' : calc.paybackPeriod < 0 ? t.impossible : calc.paybackPeriod.toFixed(1) + ' ' + t.years}</div>
             </div>
         </div>
+
+        ${proResultsHTML}
 
         <div style="margin-top: 20px; padding: 16px; background: rgba(16, 185, 129, 0.05); border-radius: 8px;">
             <p style="font-size: 0.9rem; margin-bottom: 8px;"><strong>📊 ${t.monthlyExpenses}:</strong></p>
@@ -675,12 +830,6 @@ document.addEventListener('DOMContentLoaded', function () {
     if (activeBtn) {
         activeBtn.classList.add('active');
     }
-    updatePageTranslations();
-    updateMetaTags();
-});
 
-// Analytics helper (optional - remove if not needed)
-function trackEvent(eventName) {
-    // Can be replaced with actual analytics later
-    console.log('Event:', eventName);
-}
+    updatePageTranslations();
+});

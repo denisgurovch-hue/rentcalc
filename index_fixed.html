@@ -1,0 +1,125 @@
+I can see the HTML file got corrupted again during my edits. Let me provide you with the exact section that needs to be
+manually fixed in the index.html file.
+
+In index.html, around lines 159-243, replace the insurance/utilities/Pro mode section with this:
+
+```html
+<div class="form-group">
+    <label>
+        <span data-i18n="form.insuranceCost">Страховка (в месяц)</span>
+        <span class="help-icon">
+            ?
+            <span class="tooltip" data-i18n="form.insuranceCostTooltip">Страховка имущества от
+                рисков</span>
+        </span>
+    </label>
+    <div class="input-wrapper">
+        <input type="text" id="insuranceCost" class="money-input" placeholder="500" value="500">
+        <span class="currency">₽</span>
+    </div>
+</div>
+
+<div class="form-group">
+    <label>
+        <span data-i18n="form.utilitiesCost">Коммунальные услуги (в месяц)</span>
+        <span class="help-icon">
+            ?
+            <span class="tooltip" data-i18n="form.utilitiesCostTooltip">Если ты платишь вместо
+                арендатора</span>
+        </span>
+    </label>
+    <div class="input-wrapper">
+        <input type="text" id="utilitiesCost" class="money-input" placeholder="0" value="0">
+        <span class="currency">₽</span>
+    </div>
+</div>
+
+<div id="pro-fields" class="hidden">
+    <div class="divider"></div>
+    <h3 data-i18n="form.mortgageTitle">🏦 Ипотека</h3>
+    <div class="form-group">
+        <label class="checkbox-container">
+            <input type="checkbox" id="useMortgage" onchange="toggleMortgageFields()">
+            <span class="checkmark"></span>
+            <span data-i18n="form.useMortgage">Использовать ипотеку</span>
+        </label>
+    </div>
+
+    <div id="mortgage-details" class="hidden">
+        <div class="form-row">
+            <div class="form-group half">
+                <label>
+                    <span data-i18n="form.downPayment">Первоначальный взнос</span>
+                    <span class="help-icon">?
+                        <span class="tooltip" data-i18n="form.downPaymentTooltip">Сумма собственных
+                            средств</span>
+                    </span>
+                </label>
+                <div class="input-wrapper">
+                    <input type="text" id="downPayment" class="money-input" placeholder="300 000">
+                    <span class="currency">₽</span>
+                </div>
+            </div>
+            <div class=" form-group half">
+                <label>
+                    <span data-i18n="form.interestRate">Ставка (%)</span>
+                </label>
+                <div class="input-wrapper">
+                    <input type="number" id="interestRate" placeholder="10" step="0.1">
+                    <span class="currency">%</span>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label>
+                <span data-i18n="form.loanTerm">Срок (лет)</span>
+            </label>
+            <div class="input-wrapper">
+                <input type="number" id="loanTerm" placeholder="20">
+                <span class="currency">лет</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="divider"></div>
+    <h3 data-i18n="form.npvTitle">📈 Инвестиционный анализ (NPV)</h3>
+    <div class="form-row">
+        <div class="form-group half">
+            <label>
+                <span data-i18n="form.investmentHorizon">Горизонт (лет)</span>
+            </label>
+            <div class="input-wrapper">
+                <input type="number" id="investmentHorizon" placeholder="10" value="10">
+                <span class="currency">лет</span>
+            </div>
+        </div>
+        <div class="form-group half">
+            <label>
+                <span data-i18n="form.discountRate">Дисконт (%)</span>
+                <span class="help-icon">?
+                    <span class="tooltip" data-i18n="form.discountRateTooltip">Ставка
+                        дисконтирования</span>
+                </span>
+            </label>
+            <div class="input-wrapper">
+                <input type="number" id="discountRate" placeholder="10" value="10">
+                <span class="currency">%</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="buttons-group">
+    <button type="button" class="btn-primary" onclick="calculateOnButtonClick()" data-i18n="form.calculate">💰
+        Рассчитать</button>
+    <button type="button" class="btn-secondary" onclick="clearForm()" data-i18n="form.clear">🔄
+        Очистить</button>
+</div>
+
+<p style="margin-top: 12px; font-size: 0.85rem; color: var(--text-light); text-align: center;" data-i18n="form.hint">
+    💡 Подсказка: нажми Enter или кнопку "Рассчитать"
+</p>
+```
+
+Please copy "index (1).html" to "index.html" to restore the backup, then manually add only the BUTTONS section before
+the hint text.

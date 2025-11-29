@@ -200,6 +200,28 @@ input[type="checkbox"] {
     padding: 4px;
 }
 
+.mode-button {
+    background: transparent;
+    border: none;
+    border-radius: 50px;
+    padding: 6px 16px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-light);
+    transition: all 0.3s ease;
+    font-family: inherit;
+}
+
+.mode-button:hover {
+    color: var(--text-dark);
+}
+
+.mode-button.active {
+    background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
+    color: white;
+}
+
 .pro-section {
     display: none;
     margin-top: 20px;

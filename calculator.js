@@ -515,7 +515,7 @@ function calculate() {
     let npv = 0;
     let loanAmount = 0;
 
-    if (isProMode) {
+    if (currentMode === 'pro') {
         if (values.useMortgage) {
             loanAmount = values.propertyPrice - values.downPayment;
             mortgagePayment = calculateMortgage(loanAmount, values.interestRate, values.loanTerm);
@@ -561,7 +561,7 @@ function displayResults(calc) {
     const t = translations[currentLanguage].results;
 
     let proResultsHTML = '';
-    if (calc.isProMode) {
+    if (currentMode === 'pro') {
         proResultsHTML = `
             <div class="divider"></div>
             <h3 style="margin-bottom: 16px; font-size: 1.1rem;">Pro Metrics</h3>

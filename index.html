@@ -72,12 +72,10 @@
                 <div class="form-header">
                     <h2 data-i18n="form.title">📊 Параметры расчета</h2>
                     <div class="mode-toggle">
-                        <span class="mode-label" data-i18n="mode.basic">Базовый</span>
-                        <label class="switch">
-                            <input type="checkbox" id="modeToggle" onchange="toggleMode()">
-                            <span class="slider round"></span>
-                        </label>
-                        <span class="mode-label" data-i18n="mode.pro">Pro</span>
+                        <button class="mode-button active" id="mode-basic" onclick="toggleMode('basic')"
+                            data-i18n="mode.basic">Базовый</button>
+                        <button class="mode-button" id="mode-pro" onclick="toggleMode('pro')"
+                            data-i18n="mode.pro">Pro</button>
                     </div>
                 </div>
 
@@ -165,6 +163,25 @@
                                 рисков</span>
                         </span>
                     </label>
+                    <div class="input-wrapper">
+                        <input type="text" id="insuranceCost" class="money-input" placeholder="500" value="500">
+                        <span class="currency">₽</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>
+                        <span data-i18n="form.utilitiesCost">Коммунальные услуги (в месяц)</span>
+                        <span class="help-icon">
+                            ?
+                            <span class="tooltip" data-i18n="form.utilitiesCostTooltip">Если ты платишь вместо
+                                арендатора</span>
+                        </span>
+                    </label>
+                    <div class="input-wrapper">
+                        <input type="text" id="utilitiesCost" class="money-input" placeholder="0" value="0">
+                        <span class="currency">₽</span>
+                    </div>
                 </div>
 
                 <div id="pro-fields" class="hidden">
@@ -240,6 +257,13 @@
                             </div>
                         </div>
                     </div>
+                </div>
+
+                <div class="buttons-group">
+                    <button type="button" class="btn-primary" onclick="calculateOnButtonClick()"
+                        data-i18n="form.calculate">💰 Рассчитать</button>
+                    <button type="button" class="btn-secondary" onclick="clearForm()" data-i18n="form.clear">🔄
+                        Очистить</button>
                 </div>
 
                 <p style="margin-top: 12px; font-size: 0.85rem; color: var(--text-light); text-align: center;"

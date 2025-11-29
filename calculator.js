@@ -340,15 +340,60 @@ let calculations = [];
 let comparisonItems = [];
 let isProMode = false;
 
-function toggleMode() {
-    isProMode = document.getElementById('modeToggle').checked;
-    const proFields = document.getElementById('pro-fields');
-    if (isProMode) {
-        proFields.classList.remove('hidden');
-    } else {
-        proFields.classList.add('hidden');
+function toggleMode(mode) {
+    currentMode = mode;
+    try {
+        localStorage.setItem('rentcalc_mode', mode);
+    } catch (e) {
+        console.warn('Failed to save mode to localStorage:', e);
     }
-    // Re-calculate if needed or just update UI
+
+    // Update mode buttons
+    document.querySelectorAll('.mode-button').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    const modeButton = document.getElementById(`mode-${mode}`);
+    if (modeButton) {
+        modeButton.classList.add('active');
+    }
+
+    // Show/hide Pro sections
+    const proSections = document.querySelectorAll('.pro-section');
+    proSections.forEach(section => {
+        if (mode === 'pro') {
+            section.classList.add('active');
+        } else {
+            section.classList.remove('active');
+        }
+    });
+
+    // Hide/show mortgage fields based on checkbox
+    if (mode === 'pro') {
+        toggleMortgageFields();
+    } else {
+        const mortgageFields = document.getElementById('mortgage-fields');
+        if (mortgageFields) {
+            mortgageFields.style.display = 'none';
+        }
+    }
+
+    // Hide advanced results in basic mode
+    if (mode === 'basic') {
+        const advancedResults = document.getElementById('advanced-results-container');
+        if (advancedResults) {
+            advancedResults.style.display = 'none';
+        }
+    } else {
+        // If in Pro mode and there are results, recalculate if mortgage is enabled
+        const resultsContainer = document.getElementById('results-container');
+        if (resultsContainer && resultsContainer.querySelector('.result-item')) {
+            // Trigger recalculation if there are existing results
+            const useMortgage = document.getElementById('useMortgage')?.checked;
+            if (useMortgage) {
+                // Results will be recalculated on next calculate() call
+            }
+        }
+    }
 }
 
 function toggleMortgageFields() {

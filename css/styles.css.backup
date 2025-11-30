@@ -474,41 +474,6 @@ a:hover {
   font-size: 1.75rem;
   font-weight: 700;
   background: var(--primary-gradient);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-/* === Blog Specific === */
-.blog-hero {
-  background: var(--primary-gradient);
-  color: white;
-  padding: var(--spacing-xl) 0;
-  text-align: center;
-}
-
-.blog-hero h1 {
-  color: white;
-}
-
-.blog-hero p {
-  color: rgba(255, 255, 255, 0.9);
-  font-size: 1.125rem;
-  max-width: 600px;
-  margin: 0 auto;
-}
-
-.blog-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: var(--spacing-lg);
-  padding: var(--spacing-2xl) 0;
-}
-
-.blog-card {
-  background: var(--bg-card);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md);
   overflow: hidden;
   transition: all var(--transition-normal);
   display: flex;

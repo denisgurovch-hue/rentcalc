@@ -12,7 +12,6 @@
 
 <body>
 
-    <!-- Header -->
     <header class="header">
         <div class="header-container">
             <div class="logo">RentCalc</div>
@@ -23,14 +22,13 @@
             </button>
             <nav>
                 <ul class="nav-menu">
-                    <li><a href="/">Калькулятор</a></li>
-                    <li><a href="/blog/">Блог</a></li>
+                    <li><a href="../index.html">Калькулятор</a></li>
+                    <li><a href="index.html">Блог</a></li>
                 </ul>
             </nav>
         </div>
     </header>
 
-    <!-- Article Header -->
     <section class="article-header">
         <div class="container-narrow">
             <h1>Риски сдачи недвижимости в аренду</h1>
@@ -42,7 +40,6 @@
         </div>
     </section>
 
-    <!-- Article Content -->
     <article class="article">
         <div class="article-content">
 
@@ -88,11 +85,10 @@
                 </ul>
             </section>
 
-            <!-- CTA Block -->
             <div class="cta-block">
                 <h3>Посчитайте доходность с учётом рисков</h3>
                 <p>Используйте калькулятор RentCalc, чтобы увидеть, как простои и расходы влияют на вашу прибыль</p>
-                <a href="/#calculator-form" class="btn btn-primary btn-lg">Открыть калькулятор</a>
+                <a href="../index.html#calculator-form" class="btn btn-primary btn-lg">Открыть калькулятор</a>
             </div>
 
             <section>
@@ -148,18 +144,14 @@
                 </ul>
             </section>
 
-            <!-- Related Articles -->
             <div class="related-articles">
                 <h2>Связанные статьи</h2>
-                <div class="related-grid" id="related-articles">
-                    <!-- Related articles will be inserted here -->
-                </div>
+                <div class="related-grid" id="related-articles"></div>
             </div>
 
         </div>
     </article>
 
-    <!-- Footer -->
     <footer class="footer">
         <div class="footer-container">
             <div class="footer-about">
@@ -170,8 +162,8 @@
             <div class="footer-links">
                 <h4>Навигация</h4>
                 <ul>
-                    <li><a href="/">Калькулятор</a></li>
-                    <li><a href="/blog/">Блог</a></li>
+                    <li><a href="../index.html">Калькулятор</a></li>
+                    <li><a href="index.html">Блог</a></li>
                 </ul>
             </div>
             <div class="footer-links">
@@ -183,16 +175,25 @@
                 </ul>
             </div>
         </div>
-        const menuToggle = document.querySelector('.menu-toggle');
-        const navMenu = document.querySelector('.nav-menu');
+        <div class="footer-bottom">
+            <p>&copy; 2025 RentCalc. Все права защищены.</p>
+        </div>
+    </footer>
 
-        if (menuToggle && navMenu) {
-        menuToggle.addEventListener('click', function () {
-        navMenu.classList.toggle('active');
+    <script src="../js/blog-data.js"></script>
+    <script src="../js/blog.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            renderRelatedArticles('riski-arendy', 'риски', 'related-articles', 2);
+            const menuToggle = document.querySelector('.menu-toggle');
+            const navMenu = document.querySelector('.nav-menu');
+            if (menuToggle && navMenu) {
+                menuToggle.addEventListener('click', function () {
+                    navMenu.classList.toggle('active');
+                });
+            }
         });
-        }
-        });
-        </script>
+    </script>
 
 </body>
 

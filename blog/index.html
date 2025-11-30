@@ -1,33 +1,24 @@
-<!DOCTYPE html>
-<html lang="ru">
-
+﻿<!DOCTYPE html>
+<html lang=\"ru\">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Блог о доходности аренды и инвестициях — RentCalc</title>
-    <meta name="description"
-        content="Обучающие статьи о том, как правильно считать доходность аренды, учитывать риски и принимать обоснованные инвестиционные решения.">
-    <link rel="stylesheet" href="../css/styles.css">
+  <meta charset=\"UTF-8\">
+  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">
+  <title>Блог о доходности аренды — RentCalc</title>
+  <link rel=\"stylesheet\" href=\"../css/styles.css\">
 </head>
-
 <body>
-
-    <!-- Header -->
-    <header class="header">
-        <div class="header-container">
-            <div class="logo">RentCalc</div>
-            <button class="menu-toggle" aria-label="Меню">
-                const menuToggle = document.querySelector('.menu-toggle');
-                const navMenu = document.querySelector('.nav-menu');
-
-                if (menuToggle && navMenu) {
-                menuToggle.addEventListener('click', function () {
-                navMenu.classList.toggle('active');
-                });
-                }
-                });
-                </script>
-
+  <header class=\"header\">
+    <div class=\"header-container\">
+      <div class=\"logo\">RentCalc</div>
+      <button class=\"menu-toggle\"><span></span><span></span><span></span></button>
+      <nav><ul class=\"nav-menu\"><li><a href=\"../index.html\">Калькулятор</a></li><li><a href=\"index.html\" class=\"active\">Блог</a></li></ul></nav>
+    </div>
+  </header>
+  <section class=\"blog-hero\"><div class=\"container\"><h1>Блог</h1></div></section>
+  <section><div class=\"container\"><div class=\"blog-grid\" id=\"blog-list\"></div></div></section>
+  <footer class=\"footer\"><div class=\"footer-container\"><div class=\"footer-about\"><h3>RentCalc</h3><p>Калькулятор доходности аренды</p></div></div><div class=\"footer-bottom\"><p>&copy; 2025 RentCalc</p></div></footer>
+  <script src=\"../js/blog-data.js\"></script>
+  <script src=\"../js/blog.js\"></script>
+  <script>document.addEventListener('DOMContentLoaded',function(){renderBlogList(posts,'blog-list');const m=document.querySelector('.menu-toggle'),n=document.querySelector('.nav-menu');if(m&&n)m.addEventListener('click',()=>n.classList.toggle('active'));});</script>
 </body>
-
 </html>

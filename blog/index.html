@@ -1,24 +1,101 @@
 ﻿<!DOCTYPE html>
-<html lang=\"ru\">
+<html lang="ru">
+
 <head>
-  <meta charset=\"UTF-8\">
-  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">
-  <title>Блог о доходности аренды — RentCalc</title>
-  <link rel=\"stylesheet\" href=\"../css/styles.css\">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Блог о доходности аренды и инвестициях — RentCalc</title>
+  <meta name="description"
+    content="Обучающие статьи о том, как правильно считать доходность аренды, учитывать риски и принимать обоснованные инвестиционные решения.">
+  <link rel="stylesheet" href="../css/styles.css">
 </head>
+
 <body>
-  <header class=\"header\">
-    <div class=\"header-container\">
-      <div class=\"logo\">RentCalc</div>
-      <button class=\"menu-toggle\"><span></span><span></span><span></span></button>
-      <nav><ul class=\"nav-menu\"><li><a href=\"../index.html\">Калькулятор</a></li><li><a href=\"index.html\" class=\"active\">Блог</a></li></ul></nav>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-container">
+      <div class="logo">RentCalc</div>
+      <button class="menu-toggle" aria-label="Меню">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <nav>
+        <ul class="nav-menu">
+          <li><a href="../index.html">Калькулятор</a></li>
+          <li><a href="index.html" class="active">Блог</a></li>
+        </ul>
+      </nav>
     </div>
   </header>
-  <section class=\"blog-hero\"><div class=\"container\"><h1>Блог</h1></div></section>
-  <section><div class=\"container\"><div class=\"blog-grid\" id=\"blog-list\"></div></div></section>
-  <footer class=\"footer\"><div class=\"footer-container\"><div class=\"footer-about\"><h3>RentCalc</h3><p>Калькулятор доходности аренды</p></div></div><div class=\"footer-bottom\"><p>&copy; 2025 RentCalc</p></div></footer>
-  <script src=\"../js/blog-data.js\"></script>
-  <script src=\"../js/blog.js\"></script>
-  <script>document.addEventListener('DOMContentLoaded',function(){renderBlogList(posts,'blog-list');const m=document.querySelector('.menu-toggle'),n=document.querySelector('.nav-menu');if(m&&n)m.addEventListener('click',()=>n.classList.toggle('active'));});</script>
+
+  <!-- Blog Hero -->
+  <section class="blog-hero">
+    <div class="container">
+      <h1>Блог о доходности и инвестициях</h1>
+      <p>Узнайте, как правильно оценивать недвижимость для сдачи в аренду</p>
+    </div>
+  </section>
+
+  <!-- Blog Grid -->
+  <section>
+    <div class="container">
+      <div class="blog-grid" id="blog-list">
+        <!-- Blog cards will be inserted here by JavaScript -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-about">
+        <h3>RentCalc</h3>
+        <p>Калькулятор реальной доходности аренды недвижимости. Учитываем все расходы, риски и помогаем принять
+          обоснованное инвестиционное решение.</p>
+      </div>
+      <div class="footer-links">
+        <h4>Навигация</h4>
+        <ul>
+          <li><a href="../index.html">Калькулятор</a></li>
+          <li><a href="index.html">Блог</a></li>
+        </ul>
+      </div>
+      <div class="footer-links">
+        <h4>Информация</h4>
+        <ul>
+          <li><a href="#">О проекте</a></li>
+          <li><a href="#">Контакты</a></li>
+          <li><a href="#">Политика конфиденциальности</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2025 RentCalc. Все права защищены.</p>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="../js/blog-data.js"></script>
+  <script src="../js/blog.js"></script>
+  <script>
+    // Initialize blog list when page loads
+    document.addEventListener('DOMContentLoaded', function () {
+      renderBlogList(posts, 'blog-list');
+
+      // Mobile menu
+      const menuToggle = document.querySelector('.menu-toggle');
+      const navMenu = document.querySelector('.nav-menu');
+
+      if (menuToggle && navMenu) {
+        menuToggle.addEventListener('click', function () {
+          navMenu.classList.toggle('active');
+        });
+      }
+    });
+  </script>
+
 </body>
+
 </html>

@@ -1,92 +1,33 @@
 <!DOCTYPE html>
-<html lang="ru" id="html-root">
+<html lang="ru">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Блог RentCalc - Статьи о доходности аренды и инвестициях</title>
+    <title>Блог о доходности аренды и инвестициях — RentCalc</title>
     <meta name="description"
-        content="Статьи о доходности аренды, ставке дисконтирования, ипотеке и инвестициях в недвижимость. Полезные материалы от RentCalc.">
-    <meta name="theme-color" content="#10b981">
-
-    <!-- Favicons -->
-    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="shortcut icon" href="/favicon.ico" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-    <link rel="manifest" href="/site.webmanifest" />
-
-    <link rel="canonical" href="https://rentcalc.ru/blog/">
-    <link rel="stylesheet" href="../styles.css">
+        content="Обучающие статьи о том, как правильно считать доходность аренды, учитывать риски и принимать обоснованные инвестиционные решения.">
+    <link rel="stylesheet" href="../css/styles.css">
 </head>
 
 <body>
-    <div class="container">
-        <header>
-            <div class="header-top">
-                <a href="/" class="header-logo">
-                    <span>🏠</span> RentCalc
-                </a>
-                <nav>
-                    <a href="/" data-i18n="nav.calculator">Калькулятор</a>
-                    <a href="/blog/" class="active" data-i18n="nav.blog">Блог</a>
-                </nav>
-                <div class="header-controls">
-                    <div class="lang-buttons">
-                        <button class="lang-button active" id="lang-ru" onclick="changeLanguage('ru')">🇷🇺</button>
-                        <button class="lang-button" id="lang-en" onclick="changeLanguage('en')">🇬🇧</button>
-                    </div>
-                    <button class="theme-toggle" onclick="toggleTheme()">
-                        <span id="theme-icon">🌙</span>
-                    </button>
-                </div>
-            </div>
-        </header>
 
-        <div class="blog-header">
-            <h1 data-i18n="blog.title">Блог RentCalc</h1>
-            <p data-i18n="blog.subtitle">Статьи о доходности аренды, ставке дисконтирования, ипотеке и инвестициях</p>
-        </div>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <div class="logo">RentCalc</div>
+            <button class="menu-toggle" aria-label="Меню">
+                const menuToggle = document.querySelector('.menu-toggle');
+                const navMenu = document.querySelector('.nav-menu');
 
-        <div class="blog-grid">
-            <div class="blog-card">
-                <h3>Почему вы можете потерять деньги, зарабатывая на аренде?</h3>
-                <div class="blog-date">28.11.2025</div>
-                <div class="blog-excerpt">
-                    Многие инвесторы считают только валовый доход, забывая о налогах, простоях и амортизации. Разбираем
-                    скрытые расходы, которые могут превратить актив в пассив.
-                </div>
-                <a href="why-you-can-lose-money-on-rent.html" class="blog-link">Читать статью</a>
-            </div>
+                if (menuToggle && navMenu) {
+                menuToggle.addEventListener('click', function () {
+                navMenu.classList.toggle('active');
+                });
+                }
+                });
+                </script>
 
-            <div class="blog-card">
-                <h3>Ставка дисконтирования простыми словами</h3>
-                <div class="blog-date">25.11.2025</div>
-                <div class="blog-excerpt">
-                    Почему 100 рублей сегодня стоят дороже, чем 100 рублей завтра? Как инфляция и альтернативная
-                    доходность влияют на оценку ваших инвестиций в недвижимость.
-                </div>
-                <a href="discount-rate-explained.html" class="blog-link">Читать статью</a>
-            </div>
-
-            <div class="blog-card">
-                <h3>Ипотека и реальная доходность на ваши деньги</h3>
-                <div class="blog-date">20.11.2025</div>
-                <div class="blog-excerpt">
-                    Использование кредитного плеча может как увеличить доходность (Cash-on-Cash), так и загнать в
-                    убытки. Считаем математику ипотечной квартиры.
-                </div>
-                <a href="mortgage-and-cash-on-cash.html" class="blog-link">Читать статью</a>
-            </div>
-        </div>
-
-        <footer class="footer">
-            <p data-i18n="footer.text">RentCalc © 2025 | Калькулятор доходности аренды | Все расчёты выполняются в
-                браузере, данные не передаются</p>
-        </footer>
-    </div>
-
-    <script src="../blog.js"></script>
 </body>
 
 </html>

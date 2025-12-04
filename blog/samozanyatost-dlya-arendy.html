@@ -71,9 +71,9 @@
                 <p>Самозанятость для сдачи квартиры — это способ легально получать аренду, платить небольшой налог и спать спокойно, не ждя «писем счастья» от налоговой.</p>
             </section>
 
-            <figure style="margin: 2rem 0; text-align: center;">
-                <img id="article-image" src="samozanyatost-dlya-arendy.png" alt="Самозанятость для аренды: простое руководство" style="max-width: 100%; height: auto; border-radius: 8px; cursor: pointer; transition: opacity 0.3s;">
-            </figure>
+            <div style="margin: 2rem 0; text-align: center;">
+                <iframe width="692" height="389" src="https://rutube.ru/play/embed/58444cae97add8dda85797e841b79a27?skinColor=8E24AA" allow="clipboard-write; autoplay" webkitAllowFullScreen mozallowfullscreen allowFullScreen style="max-width: 100%; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);"></iframe>
+            </div>
 
             <section>
                 <h2>Можно ли сдавать квартиру как самозанятый</h2>
@@ -251,12 +251,6 @@
         </div>
     </footer>
 
-    <!-- Modal for fullscreen image -->
-    <div id="image-modal" style="display: none; position: fixed; z-index: 10000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.9); cursor: pointer; overflow: auto;">
-        <span style="position: absolute; top: 20px; right: 40px; color: #fff; font-size: 40px; font-weight: bold; z-index: 10001; cursor: pointer; line-height: 1;">&times;</span>
-        <img id="modal-image" style="margin: auto; display: block; max-width: 90%; max-height: 90%; margin-top: 5%; object-fit: contain; border-radius: 8px;">
-    </div>
-
     <script src="../js/blog-data.js"></script>
     <script src="../js/blog.js"></script>
     <script>
@@ -267,45 +261,6 @@
             if (menuToggle && navMenu) {
                 menuToggle.addEventListener('click', function () {
                     navMenu.classList.toggle('active');
-                });
-            }
-
-            // Image modal functionality
-            const articleImage = document.getElementById('article-image');
-            const modal = document.getElementById('image-modal');
-            const modalImage = document.getElementById('modal-image');
-            const closeBtn = modal.querySelector('span');
-
-            if (articleImage && modal && modalImage) {
-                // Open modal on image click
-                articleImage.addEventListener('click', function() {
-                    modalImage.src = articleImage.src;
-                    modalImage.alt = articleImage.alt;
-                    modal.style.display = 'block';
-                    document.body.style.overflow = 'hidden'; // Prevent background scrolling
-                });
-
-                // Close modal on close button click
-                closeBtn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    modal.style.display = 'none';
-                    document.body.style.overflow = 'auto';
-                });
-
-                // Close modal on background click
-                modal.addEventListener('click', function(e) {
-                    if (e.target === modal) {
-                        modal.style.display = 'none';
-                        document.body.style.overflow = 'auto';
-                    }
-                });
-
-                // Close modal on Escape key
-                document.addEventListener('keydown', function(e) {
-                    if (e.key === 'Escape' && modal.style.display === 'block') {
-                        modal.style.display = 'none';
-                        document.body.style.overflow = 'auto';
-                    }
                 });
             }
         });

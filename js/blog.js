@@ -13,8 +13,14 @@ function renderBlogCard(post) {
         `<span class="blog-tag">${tag}</span>`
     ).join('');
 
+    const imageHTML = post.image ? 
+        `<div class="blog-card-image" style="width: 100%; height: 200px; overflow: hidden; background: var(--bg-secondary);">
+            <img src="blog/${post.image}" alt="${post.title}" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+        </div>` : '';
+
     return `
     <div class="blog-card">
+      ${imageHTML}
       <div class="blog-card-content">
         <div class="blog-card-meta">
           ${tagsHTML}
@@ -23,7 +29,7 @@ function renderBlogCard(post) {
         <h3>${post.title}</h3>
         <p>${post.excerpt}</p>
         <div class="blog-card-actions">
-          <a href="/blog/${post.slug}.html" class="btn btn-primary">Читать</a>
+          <a href="blog/${post.slug}.html" class="btn btn-primary">Читать</a>
           <a href="/#calculator-form" class="btn btn-secondary">Посчитать</a>
         </div>
       </div>

@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Генератор договора найма квартиры — RentCalc</title>
+    
+    <!-- SEO мета-теги -->
+    <meta name="description" content="Бесплатный онлайн-генератор договора найма квартиры. Создайте юридически корректный договор аренды жилья за несколько минут. Скачайте готовый документ в формате Word.">
+    <meta name="keywords" content="договор найма квартиры, договор аренды, генератор договора, найм жилья, аренда квартиры, договор найма, скачать договор, договор найма жилого помещения">
+    <meta name="author" content="RentCalc">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://rentcalc.ru/rental-contract.html">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://rentcalc.ru/rental-contract.html">
+    <meta property="og:title" content="Генератор договора найма квартиры — RentCalc">
+    <meta property="og:description" content="Бесплатный онлайн-генератор договора найма квартиры. Создайте юридически корректный договор аренды жилья за несколько минут.">
+    <meta property="og:locale" content="ru_RU">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://rentcalc.ru/rental-contract.html">
+    <meta property="twitter:title" content="Генератор договора найма квартиры — RentCalc">
+    <meta property="twitter:description" content="Бесплатный онлайн-генератор договора найма квартиры. Создайте юридически корректный договор аренды жилья за несколько минут.">
+    
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Генератор договора найма квартиры",
+        "description": "Бесплатный онлайн-генератор договора найма квартиры. Создайте юридически корректный договор аренды жилья за несколько минут.",
+        "url": "https://rentcalc.ru/rental-contract.html",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "Web",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "RUB"
+        },
+        "provider": {
+            "@type": "Organization",
+            "name": "RentCalc",
+            "url": "https://rentcalc.ru"
+        }
+    }
+    </script>
+    <style>
+        /* ============================================
+           Генератор договора найма — Стили
+           ============================================ */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --primary-color: #667eea;
+            --primary-dark: #5568d3;
+            --secondary-color: #764ba2;
+            --accent-color: #48bb78;
+            --accent-hover: #38a169;
+            --error-color: #e53e3e;
+            --success-color: #48bb78;
+
+            --bg-primary: #ffffff;
+            --bg-secondary: #f7fafc;
+            --bg-card: #ffffff;
+            --text-primary: #2d3748;
+            --text-secondary: #718096;
+            --text-light: #a0aec0;
+            --border-color: #e2e8f0;
+
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07);
+            --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1);
+
+            --font-primary: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+
+            --spacing-xs: 0.5rem;
+            --spacing-sm: 1rem;
+            --spacing-md: 1.5rem;
+            --spacing-lg: 2rem;
+            --spacing-xl: 3rem;
+
+            --radius-sm: 0.375rem;
+            --radius-md: 0.5rem;
+            --radius-lg: 0.75rem;
+        }
+
+        body {
+            font-family: var(--font-primary);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            padding-bottom: var(--spacing-xl);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--spacing-md);
+        }
+
+        /* Шапка */
+        .header {
+            background: var(--bg-primary);
+            box-shadow: var(--shadow-sm);
+            padding: var(--spacing-lg) 0;
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .header-content {
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: var(--spacing-xs);
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        /* Уведомления */
+        .notification {
+            padding: var(--spacing-md);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--spacing-md);
+            display: none;
+        }
+
+        .notification.success {
+            background: rgba(72, 187, 120, 0.1);
+            border: 1px solid var(--success-color);
+            color: #22543d;
+        }
+
+        .notification.error {
+            background: rgba(229, 62, 62, 0.1);
+            border: 1px solid var(--error-color);
+            color: #742a2a;
+        }
+
+        .notification.show {
+            display: block;
+        }
+
+        /* Форма */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: var(--spacing-lg);
+        }
+
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .form-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow-md);
+        }
+
+        .form-card h2 {
+            font-size: 1.5rem;
+            margin-bottom: var(--spacing-md);
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: var(--spacing-xs);
+        }
+
+        .form-group {
+            margin-bottom: var(--spacing-md);
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: var(--spacing-xs);
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .form-group label .required {
+            color: var(--error-color);
+            margin-left: 2px;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            font-family: var(--font-primary);
+            font-size: 1rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-group .error-message {
+            color: var(--error-color);
+            font-size: 0.875rem;
+            margin-top: var(--spacing-xs);
+            display: none;
+        }
+
+        .form-group.error input,
+        .form-group.error textarea,
+        .form-group.error select {
+            border-color: var(--error-color);
+        }
+
+        .form-group.error .error-message {
+            display: block;
+        }
+
+        /* Кнопки */
+        .form-actions {
+            margin-top: var(--spacing-xl);
+            display: flex;
+            gap: var(--spacing-md);
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.875rem 2rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: var(--font-primary);
+        }
+
+        .btn-primary {
+            background: var(--primary-gradient);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-secondary {
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-secondary);
+        }
+
+        /* Полноширинные карточки */
+        .form-card.full-width {
+            grid-column: 1 / -1;
+        }
+
+        /* Навигация */
+        .nav-header {
+            background: var(--bg-primary);
+            box-shadow: var(--shadow-sm);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: var(--spacing-sm) var(--spacing-md);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: var(--spacing-lg);
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-menu a {
+            color: var(--text-primary);
+            font-weight: 500;
+            transition: all 0.2s;
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: var(--radius-sm);
+            text-decoration: none;
+        }
+
+        .nav-menu a:hover {
+            color: var(--primary-color);
+            background: rgba(102, 126, 234, 0.08);
+        }
+
+        .nav-menu a.active {
+            color: var(--primary-color);
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 0.25rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: var(--spacing-xs);
+        }
+
+        .menu-toggle span {
+            width: 1.5rem;
+            height: 2px;
+            background: var(--text-primary);
+            transition: all 0.2s;
+        }
+
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: flex;
+            }
+
+            .nav-menu {
+                position: fixed;
+                top: 60px;
+                left: 0;
+                right: 0;
+                background: white;
+                flex-direction: column;
+                gap: 0;
+                padding: var(--spacing-sm) 0;
+                box-shadow: var(--shadow-lg);
+                transform: translateY(-150%);
+                transition: transform 0.3s;
+                z-index: 1000;
+            }
+
+            .nav-menu li {
+                list-style: none;
+                margin: 0;
+                padding: 0;
+                border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            }
+
+            .nav-menu li:last-child {
+                border-bottom: none;
+            }
+
+            .nav-menu a {
+                display: block;
+                padding: var(--spacing-md);
+                border-radius: 0;
+            }
+
+            .nav-menu.active {
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="nav-header">
+        <div class="nav-container">
+            <a href="/" class="logo">RentCalc</a>
+            <button class="menu-toggle" aria-label="Меню">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="/">Калькулятор</a></li>
+                    <li><a href="/blog/">Блог</a></li>
+                    <li><a href="/rental-contract.html" class="active">Договор</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="header">
+        <div class="container">
+            <div class="header-content">
+                <h1>Генератор договора найма квартиры</h1>
+                <p>Заполните форму и скачайте договор в формате Word</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="notification" id="notification"></div>
+
+        <form id="contractForm">
+            <div class="form-grid">
+                <!-- Наймодатель (Собственник) -->
+                <div class="form-card">
+                    <h2>Наймодатель (Собственник)</h2>
+                    
+                    <div class="form-group">
+                        <label>ФИО наймодателя <span class="required">*</span></label>
+                        <input type="text" id="landlordName" name="landlordName" required>
+                        <div class="error-message">Поле обязательно для заполнения</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Дата рождения</label>
+                        <input type="date" id="landlordBirthDate" name="landlordBirthDate">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Паспортные данные <span class="required">*</span></label>
+                        <textarea id="landlordPassport" name="landlordPassport" placeholder="Серия, номер, кем и когда выдан" required></textarea>
+                        <div class="error-message">Поле обязательно для заполнения</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Адрес регистрации</label>
+                        <input type="text" id="landlordAddress" name="landlordAddress">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Телефон <span class="required">*</span></label>
+                        <input type="tel" id="landlordPhone" name="landlordPhone" required>
+                        <div class="error-message">Поле обязательно для заполнения</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="landlordEmail" name="landlordEmail">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Основание права на квартиру</label>
+                        <input type="text" id="landlordBasis" name="landlordBasis" placeholder="Например: Свидетельство о праве собственности...">
+                    </div>
+                </div>
+
+                <!-- Наниматель (Арендатор) -->
+                <div class="form-card">
+                    <h2>Наниматель (Арендатор)</h2>
+                    
+                    <div class="form-group">
+                        <label>ФИО нанимателя <span class="required">*</span></label>
+                        <input type="text" id="tenantName" name="tenantName" required>
+                        <div class="error-message">Поле обязательно для заполнения</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Дата рождения</label>
+                        <input type="date" id="tenantBirthDate" name="tenantBirthDate">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Паспортные данные <span class="required">*</span></label>
+                        <textarea id="tenantPassport" name="tenantPassport" placeholder="Серия, номер, кем и когда выдан" required></textarea>
+                        <div class="error-message">Поле обязательно для заполнения</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Адрес регистрации</label>
+                        <input type="text" id="tenantAddress" name="tenantAddress">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Телефон <span class="required">*</span></label>
+                        <input type="tel" id="tenantPhone" name="tenantPhone" required>
+                        <div class="error-message">Поле обязательно для заполнения</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="tenantEmail" name="tenantEmail">
+                    </div>
+                </div>
+
+                <!-- Квартира (объект найма) -->
+                <div class="form-card">
+                    <h2>Квартира (объект найма)</h2>
+                    
+                    <div class="form-group">
+                        <label>Город</label>
+                        <input type="text" id="apartmentCity" name="apartmentCity" placeholder="Например: Москва">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Адрес квартиры <span class="required">*</span></label>
+                        <input type="text" id="apartmentAddress" name="apartmentAddress" placeholder="Улица, дом, корпус, квартира" required>
+                        <div class="error-message">Поле обязательно для заполнения</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Этаж</label>
+                        <input type="number" id="apartmentFloor" name="apartmentFloor" min="1">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Количество комнат</label>
+                        <input type="number" id="apartmentRooms" name="apartmentRooms" min="1">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Площадь, м² <span class="required">*</span></label>
+                        <input type="number" id="apartmentArea" name="apartmentArea" step="0.01" min="0" required>
+                        <div class="error-message">Поле обязательно для заполнения</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Краткая характеристика квартиры</label>
+                        <textarea id="apartmentDescription" name="apartmentDescription" placeholder="Состояние, ремонт, особенности"></textarea>
+                    </div>
+                </div>
+
+                <!-- Условия найма и платежи -->
+                <div class="form-card">
+                    <h2>Условия найма и платежи</h2>
+                    
+                    <div class="form-group">
+                        <label>Дата начала найма <span class="required">*</span></label>
+                        <input type="date" id="startDate" name="startDate" required>
+                        <div class="error-message">Поле обязательно для заполнения</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Дата окончания найма <span class="required">*</span></label>
+                        <input type="date" id="endDate" name="endDate" required>
+                        <div class="error-message">Поле обязательно для заполнения</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Ежемесячная плата за найм, руб. <span class="required">*</span></label>
+                        <input type="number" id="monthlyRent" name="monthlyRent" min="0" step="0.01" required>
+                        <div class="error-message">Поле обязательно для заполнения</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Период оплаты</label>
+                        <select id="paymentPeriod" name="paymentPeriod">
+                            <option value="ежемесячно">Ежемесячно</option>
+                            <option value="ежеквартально">Ежеквартально</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Страховой депозит (залог), руб. <span class="required">*</span></label>
+                        <input type="number" id="deposit" name="deposit" min="0" step="0.01" required>
+                        <div class="error-message">Поле обязательно для заполнения</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Крайний день месяца для внесения платы <span class="required">*</span></label>
+                        <input type="number" id="paymentDay" name="paymentDay" min="1" max="31" required>
+                        <div class="error-message">Поле обязательно для заполнения (от 1 до 31)</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Услуги, входящие в плату за найм / оплачиваемые отдельно</label>
+                        <textarea id="servicesInfo" name="servicesInfo" placeholder="Например: Интернет и TV входят в плату за найм. Междугородняя связь оплачивается отдельно."></textarea>
+                    </div>
+                </div>
+
+                <!-- Проживающие лица -->
+                <div class="form-card">
+                    <h2>Проживающие лица</h2>
+                    
+                    <div class="form-group">
+                        <label>Список граждан, которые будут проживать в квартире</label>
+                        <textarea id="residents" name="residents" placeholder="Укажите ФИО и родство, например: Иванов Иван Иванович (наниматель), Петрова Мария Сергеевна (супруга нанимателя)"></textarea>
+                    </div>
+                </div>
+
+                <!-- Дополнительные условия -->
+                <div class="form-card">
+                    <h2>Дополнительные условия</h2>
+                    
+                    <div class="form-group">
+                        <label>Оплата коммунальных услуг</label>
+                        <select id="utilitiesPayment" name="utilitiesPayment">
+                            <option value="оплачивает наниматель">Оплачивает наниматель</option>
+                            <option value="оплачивает наймодатель">Оплачивает наймодатель</option>
+                            <option value="по договорённости">По договорённости</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Домашние животные</label>
+                        <select id="pets" name="pets">
+                            <option value="запрещены">Запрещены</option>
+                            <option value="разрешены по согласованию с наймодателем">Разрешены по согласованию с наймодателем</option>
+                            <option value="разрешены без ограничений">Разрешены без ограничений</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Курение</label>
+                        <select id="smoking" name="smoking">
+                            <option value="запрещено">Запрещено</option>
+                            <option value="разрешено">Разрешено</option>
+                            <option value="только на балконе/лоджии/улице">Только на балконе/лоджии/улице</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Дополнительные условия договора</label>
+                        <textarea id="additionalTerms" name="additionalTerms" placeholder="Любые специальные договорённости: штрафы, порядок продления и др."></textarea>
+                    </div>
+                </div>
+
+                <!-- Передаточный акт -->
+                <div class="form-card full-width">
+                    <h2>Передаточный акт (Приложение №1)</h2>
+                    
+                    <div class="form-group">
+                        <label>Перечень имущества (мебель, техника и др.)</label>
+                        <textarea id="inventory" name="inventory" placeholder="Перечислите предметы и их состояние, например: Диван угловой, состояние хорошее; Холодильник двухкамерный, работает исправно"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Показания счётчика электроэнергии, кВт⋅ч</label>
+                        <input type="number" id="electricityMeter" name="electricityMeter" min="0" step="0.01">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Показания счётчика холодной воды, м³</label>
+                        <input type="number" id="coldWaterMeter" name="coldWaterMeter" min="0" step="0.01">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Показания счётчика горячей воды, м³</label>
+                        <input type="number" id="hotWaterMeter" name="hotWaterMeter" min="0" step="0.01">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Количество комплектов ключей <span class="required">*</span></label>
+                        <input type="number" id="keysCount" name="keysCount" min="1" required>
+                        <div class="error-message">Поле обязательно для заполнения</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Описание состояния квартиры для акта</label>
+                        <textarea id="apartmentCondition" name="apartmentCondition" placeholder="Состояние отделки, пола, стен, сантехники и т.п."></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Скачать договор (Word)</button>
+                <button type="button" class="btn btn-secondary" id="clearBtn">Очистить форму</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // ============================================
+        // Генератор договора найма — JavaScript
+        // ============================================
+
+        /**
+         * Показывает уведомление
+         */
+        function showNotification(message, type) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification ${type} show`;
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 5000);
+        }
+
+        /**
+         * Валидация формы
+         */
+        function validateForm() {
+            const form = document.getElementById('contractForm');
+            const requiredFields = form.querySelectorAll('[required]');
+            let isValid = true;
+            let firstError = null;
+
+            // Сброс предыдущих ошибок
+            form.querySelectorAll('.form-group').forEach(group => {
+                group.classList.remove('error');
+            });
+
+            // Проверка обязательных полей
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    isValid = false;
+                    const formGroup = field.closest('.form-group');
+                    if (formGroup) {
+                        formGroup.classList.add('error');
+                        if (!firstError) {
+                            firstError = field;
+                        }
+                    }
+                }
+            });
+
+            // Проверка дат
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            
+            if (startDate && endDate) {
+                const start = new Date(startDate);
+                const end = new Date(endDate);
+                
+                if (end < start) {
+                    isValid = false;
+                    const endDateGroup = document.getElementById('endDate').closest('.form-group');
+                    if (endDateGroup) {
+                        endDateGroup.classList.add('error');
+                        endDateGroup.querySelector('.error-message').textContent = 'Дата окончания не может быть раньше даты начала';
+                        if (!firstError) {
+                            firstError = document.getElementById('endDate');
+                        }
+                    }
+                }
+            }
+
+            // Прокрутка к первой ошибке
+            if (firstError) {
+                firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                firstError.focus();
+            }
+
+            return isValid;
+        }
+
+        /**
+         * Подсчёт количества дней найма
+         */
+        function calculateDays(startDate, endDate) {
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            const diffTime = Math.abs(end - start);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            return diffDays;
+        }
+
+        /**
+         * Форматирование даты для текста договора
+         */
+        function formatDate(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            const months = [
+                'января', 'февраля', 'марта', 'апреля', 'мая', 'июня',
+                'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'
+            ];
+            return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()} г.`;
+        }
+
+        /**
+         * Форматирование числа (рубли)
+         */
+        function formatCurrency(amount) {
+            if (!amount) return '0';
+            return new Intl.NumberFormat('ru-RU', {
+                style: 'decimal',
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }).format(amount);
+        }
+
+        /**
+         * Генерация текста договора
+         */
+        function generateContractText(data) {
+            const today = new Date();
+            const todayFormatted = formatDate(today.toISOString().split('T')[0]);
+            const daysCount = calculateDays(data.startDate, data.endDate);
+
+            // Формирование текста договора
+            let contract = '';
+
+            // Шапка
+            contract += 'ДОГОВОР НАЙМА ЖИЛОГО ПОМЕЩЕНИЯ\n\n';
+            contract += `${data.apartmentCity || 'г. Москва'}, ${todayFormatted}\n\n`;
+
+            // Вводный абзац
+            contract += `Наймодатель: ${data.landlordName}`;
+            if (data.landlordBirthDate) {
+                contract += `, ${formatDate(data.landlordBirthDate)} г.р.`;
+            }
+            contract += `, паспорт ${data.landlordPassport}`;
+            if (data.landlordAddress) {
+                contract += `, зарегистрирован(а) по адресу: ${data.landlordAddress}`;
+            }
+            contract += `, тел.: ${data.landlordPhone}`;
+            if (data.landlordEmail) {
+                contract += `, email: ${data.landlordEmail}`;
+            }
+            contract += ',\n';
+            if (data.landlordBasis) {
+                contract += `основание права: ${data.landlordBasis}`;
+            } else {
+                contract += 'на основании права собственности';
+            }
+            contract += ',\nс одной стороны, и\n\n';
+
+            contract += `Наниматель: ${data.tenantName}`;
+            if (data.tenantBirthDate) {
+                contract += `, ${formatDate(data.tenantBirthDate)} г.р.`;
+            }
+            contract += `, паспорт ${data.tenantPassport}`;
+            if (data.tenantAddress) {
+                contract += `, зарегистрирован(а) по адресу: ${data.tenantAddress}`;
+            }
+            contract += `, тел.: ${data.tenantPhone}`;
+            if (data.tenantEmail) {
+                contract += `, email: ${data.tenantEmail}`;
+            }
+            contract += ',\nс другой стороны,\n\n';
+
+            contract += 'именуемые в дальнейшем «Стороны», заключили настоящий договор о нижеследующем:\n\n';
+
+            // ПРЕДМЕТ ДОГОВОРА
+            contract += '1. ПРЕДМЕТ ДОГОВОРА\n\n';
+            contract += '1.1. Наймодатель обязуется предоставить Нанимателю во временное владение и пользование для проживания жилое помещение (квартиру), расположенное по адресу: ';
+            contract += `${data.apartmentCity ? data.apartmentCity + ', ' : ''}${data.apartmentAddress}`;
+            if (data.apartmentFloor) {
+                contract += `, ${data.apartmentFloor} этаж`;
+            }
+            if (data.apartmentRooms) {
+                contract += `, ${data.apartmentRooms} ${data.apartmentRooms === 1 ? 'комната' : data.apartmentRooms < 5 ? 'комнаты' : 'комнат'}`;
+            }
+            contract += `, общей площадью ${data.apartmentArea} кв.м.`;
+            if (data.apartmentDescription) {
+                contract += `\n\nКраткая характеристика: ${data.apartmentDescription}`;
+            }
+            contract += '\n\n';
+            contract += '1.2. Подробная характеристика квартиры, перечень передаваемого имущества, состояние квартиры и показания приборов учёта отражены в Приложении №1 (Передаточный акт), являющемся неотъемлемой частью настоящего договора.\n\n';
+
+            // СРОК НАЙМА
+            contract += '2. СРОК НАЙМА\n\n';
+            contract += `2.1. Настоящий договор вступает в силу с момента подписания и действует с ${formatDate(data.startDate)} по ${formatDate(data.endDate)} включительно.\n\n`;
+            contract += `2.2. Срок найма составляет ${daysCount} ${daysCount === 1 || (daysCount % 10 === 1 && daysCount % 100 !== 11) ? 'календарный день' : daysCount % 10 >= 2 && daysCount % 10 <= 4 && (daysCount % 100 < 10 || daysCount % 100 >= 20) ? 'календарных дня' : 'календарных дней'}.\n\n`;
+            contract += '2.3. Договор прекращает своё действие после исполнения Сторонами всех обязательств, предусмотренных настоящим договором.\n\n';
+
+            // ПРАВА И ОБЯЗАННОСТИ СТОРОН
+            contract += '3. ПРАВА И ОБЯЗАННОСТИ СТОРОН\n\n';
+
+            contract += '3.1. Наймодатель обязуется:\n';
+            contract += '3.1.1. Передать Нанимателю квартиру в состоянии, пригодном для проживания, в срок, установленный настоящим договором.\n';
+            contract += '3.1.2. Предоставить Нанимателю документы, подтверждающие право собственности или иное право на распоряжение квартирой.\n';
+            contract += '3.1.3. Производить за свой счёт капитальный ремонт квартиры, а также ремонт оборудования и имущества, переданного Нанимателю, если их поломка произошла не по вине Нанимателя.\n';
+            contract += `3.1.4. Возвратить Нанимателю страховой депозит в размере ${formatCurrency(data.deposit)} руб. после выезда Нанимателя из квартиры и проверки расчётов и состояния имущества, за вычетом сумм, причитающихся Наймодателю в соответствии с условиями настоящего договора.\n`;
+            contract += '3.1.5. Гарантировать, что квартира не обременена правами третьих лиц и не сдана в найм другим лицам.\n\n';
+
+            contract += '3.2. Наймодатель имеет право:\n';
+            contract += '3.2.1. Осматривать квартиру в оговорённые сроки и по предварительному согласованию с Нанимателем.\n';
+            contract += '3.2.2. Требовать от Нанимателя соблюдения условий настоящего договора.\n\n';
+
+            contract += '3.3. Наниматель обязуется:\n';
+            contract += '3.3.1. Использовать квартиру исключительно для проживания.';
+            if (data.residents) {
+                contract += ` Квартира используется для проживания следующих граждан: ${data.residents}.`;
+            }
+            contract += '\n';
+            contract += '3.3.2. Соблюдать правила пользования жилым помещением, правила пожарной безопасности, санитарные нормы, соблюдать тишину в установленное время.\n';
+            contract += '3.3.3. Своевременно вносить плату за найм и иные платежи, предусмотренные настоящим договором, и предоставлять Наймодателю подтверждения оплаты по его требованию.\n';
+            contract += '3.3.4. Бережно относиться к квартире и переданному имуществу, не допускать его порчи, возмещать ущерб, причинённый по его вине.\n';
+            contract += '3.3.5. Не производить перепланировок, реконструкций, не устанавливать дополнительное оборудование и не менять замки без письменного согласия Наймодателя.\n';
+            contract += '3.3.6. Не сдавать квартиру в поднайм и не передавать права по настоящему договору третьим лицам без согласия Наймодателя.\n';
+            contract += '3.3.7. Немедленно уведомлять Наймодателя о любых авариях, поломках, хищениях и иных происшествиях, а также при необходимости обращаться в компетентные органы.\n';
+            contract += '3.3.8. При прекращении договора освободить квартиру, передать ключи и имущество по акту приёма-передачи в состоянии, соответствующем условиям настоящего договора и Приложения №1, с учётом нормального износа.\n\n';
+
+            contract += '3.4. Наниматель имеет право:\n';
+            contract += '3.4.1. Требовать от Наймодателя выполнения его обязательств по настоящему договору.\n';
+            contract += '3.4.2. Пользоваться квартирой и переданным имуществом в соответствии с условиями договора.\n\n';
+
+            // ПЛАТЕЖИ И ПОРЯДОК РАСЧЁТОВ
+            contract += '4. ПЛАТЕЖИ И ПОРЯДОК РАСЧЁТОВ\n\n';
+            contract += `4.1. Размер ежемесячной платы за найм составляет ${formatCurrency(data.monthlyRent)} руб. (${data.monthlyRent.toLocaleString('ru-RU')} рублей).\n\n`;
+            contract += `4.2. Плата за найм вносится ${data.paymentPeriod === 'ежеквартально' ? 'ежеквартально' : 'ежемесячно'} не позднее ${data.paymentDay} числа каждого ${data.paymentPeriod === 'ежеквартально' ? 'квартала' : 'месяца'} за ${data.paymentPeriod === 'ежеквартально' ? 'предстоящий квартал' : 'предстоящий месяц'}.\n\n`;
+            contract += `4.3. При заключении договора Наниматель вносит страховой депозит (залог) в размере ${formatCurrency(data.deposit)} руб. (${data.deposit.toLocaleString('ru-RU')} рублей). Депозит предназначен для обеспечения сохранности имущества, оплаты коммунальных и иных услуг, а также покрытия возможного ущерба, причинённого Нанимателем.\n\n`;
+            contract += '4.4. Возврат депозита осуществляется Наймодателем в течение 10 (десяти) рабочих дней после выезда Нанимателя из квартиры, проверки состояния имущества и проведения всех взаиморасчётов. Из суммы депозита могут быть удержаны:\n';
+            contract += '- суммы задолженности по оплате найма и коммунальных услуг;\n';
+            contract += '- суммы, необходимые для возмещения ущерба, причинённого имуществу;\n';
+            contract += '- иные суммы, предусмотренные настоящим договором.\n';
+            contract += 'При наличии споров относительно удержаний Стороны вправе привлечь независимую экспертизу.\n\n';
+
+            contract += '4.5. Оплата коммунальных услуг и эксплуатационных платежей:\n';
+            if (data.utilitiesPayment === 'оплачивает наниматель') {
+                contract += 'Коммунальные услуги (электроэнергия, водоснабжение, отопление, вывоз мусора и др.) оплачиваются Нанимателем самостоятельно на основании показаний приборов учёта и квитанций.\n';
+            } else if (data.utilitiesPayment === 'оплачивает наймодатель') {
+                contract += 'Коммунальные услуги (электроэнергия, водоснабжение, отопление, вывоз мусора и др.) оплачиваются Наймодателем.\n';
+            } else {
+                contract += 'Оплата коммунальных услуг осуществляется по договорённости Сторон.\n';
+            }
+            if (data.servicesInfo) {
+                contract += `\n${data.servicesInfo}\n`;
+            }
+            contract += '\n';
+
+            contract += '4.6. Стороны несут ответственность за своевременное проведение взаиморасчётов. Все расчёты производятся в безналичном порядке или наличными денежными средствами с выдачей расписки.\n\n';
+
+            // ОТВЕТСТВЕННОСТЬ И РАСТОРЖЕНИЕ
+            contract += '5. ОТВЕТСТВЕННОСТЬ И РАСТОРЖЕНИЕ\n\n';
+            contract += '5.1. Настоящий договор может быть изменён или расторгнут по соглашению Сторон, оформленному в письменной форме.\n\n';
+            contract += '5.2. Каждая из Сторон вправе требовать расторжения договора в одностороннем порядке при существенном нарушении условий договора другой Стороной.\n\n';
+            contract += '5.3. При нарушении Нанимателем сроков внесения платы за найм более чем на 10 (десять) дней, Наймодатель вправе расторгнуть договор в одностороннем порядке. В этом случае договор считается расторгнутым с момента направления Нанимателю уведомления о расторжении.\n\n';
+            contract += '5.4. При нарушении условий договора виновная Сторона возмещает другой Стороне причинённые убытки. Стороны могут предусмотреть неустойку (штраф, пени) за нарушение отдельных условий договора.';
+            if (data.additionalTerms && data.additionalTerms.includes('неустойк') || data.additionalTerms && data.additionalTerms.includes('штраф') || data.additionalTerms && data.additionalTerms.includes('пен')) {
+                contract += `\n\nДополнительные условия по ответственности: ${data.additionalTerms}`;
+            }
+            contract += '\n\n';
+
+            // ФОРС-МАЖОР И РАЗРЕШЕНИЕ СПОРОВ
+            contract += '6. ФОРС-МАЖОР И РАЗРЕШЕНИЕ СПОРОВ\n\n';
+            contract += '6.1. Стороны освобождаются от ответственности за частичное или полное неисполнение обязательств по настоящему договору, если это неисполнение явилось следствием обстоятельств непреодолимой силы (форс-мажор), возникших после заключения договора в результате событий чрезвычайного характера, которые Стороны не могли предвидеть или предотвратить.\n\n';
+            contract += '6.2. Все споры и разногласия, возникающие между Сторонами в связи с настоящим договором, разрешаются путём переговоров. При невозможности достижения согласия споры подлежат разрешению в суде по месту нахождения квартиры в соответствии с законодательством Российской Федерации.\n\n';
+
+            // ЗАКЛЮЧИТЕЛЬНЫЕ УСЛОВИЯ
+            contract += '7. ЗАКЛЮЧИТЕЛЬНЫЕ УСЛОВИЯ\n\n';
+            contract += '7.1. Условия настоящего договора являются конфиденциальными и не подлежат разглашению третьим лицам без согласия другой Стороны.\n\n';
+            contract += '7.2. Настоящий договор составлен в двух экземплярах, имеющих равную юридическую силу, по одному для каждой из Сторон.\n\n';
+            contract += '7.3. Во всём, что не предусмотрено настоящим договором, Стороны руководствуются законодательством Российской Федерации.\n\n';
+            contract += '7.4. Приложение №1 (Передаточный акт) является неотъемлемой частью настоящего договора.\n\n';
+
+            // Дополнительные условия
+            if (data.additionalTerms && (!data.additionalTerms.includes('неустойк') && !data.additionalTerms.includes('штраф') && !data.additionalTerms.includes('пен'))) {
+                contract += '7.5. Дополнительные условия:\n';
+                contract += `${data.additionalTerms}\n\n`;
+            }
+
+            // Условия про животных и курение
+            if (data.pets !== 'запрещены' || data.smoking !== 'запрещено') {
+                contract += '7.6. Специальные условия:\n';
+                if (data.pets !== 'запрещены') {
+                    contract += `- Домашние животные: ${data.pets}.\n`;
+                }
+                if (data.smoking !== 'запрещено') {
+                    contract += `- Курение: ${data.smoking}.\n`;
+                }
+                contract += '\n';
+            }
+
+            // Подписи
+            contract += 'ПОДПИСИ СТОРОН:\n\n';
+            contract += 'Наймодатель: _________________ / ' + data.landlordName + ' /\n\n';
+            contract += 'Наниматель: _________________ / ' + data.tenantName + ' /\n\n';
+
+            // ПЕРЕДАТОЧНЫЙ АКТ
+            contract += '\n\n═══════════════════════════════════════════════════════════════\n';
+            contract += 'ПРИЛОЖЕНИЕ №1\n';
+            contract += 'ПЕРЕДАТОЧНЫЙ АКТ\n';
+            contract += 'к Договору найма жилого помещения\n';
+            contract += `от ${todayFormatted}\n`;
+            contract += '═══════════════════════════════════════════════════════════════\n\n';
+
+            contract += `Наймодатель: ${data.landlordName}\n`;
+            contract += `Наниматель: ${data.tenantName}\n\n`;
+
+            contract += 'Настоящий акт составлен о том, что Наймодатель передал, а Наниматель принял квартиру, расположенную по адресу: ';
+            contract += `${data.apartmentCity ? data.apartmentCity + ', ' : ''}${data.apartmentAddress}`;
+            contract += ', со следующим имуществом и в следующем состоянии:\n\n';
+
+            // Имущество
+            if (data.inventory) {
+                contract += '1. Перечень имущества:\n';
+                const inventoryLines = data.inventory.split('\n').filter(line => line.trim());
+                inventoryLines.forEach((line, index) => {
+                    contract += `${index + 1}. ${line.trim()}\n`;
+                });
+                contract += '\n';
+            } else {
+                contract += '1. Перечень имущества: имущество не передаётся или отсутствует.\n\n';
+            }
+
+            // Состояние квартиры
+            if (data.apartmentCondition) {
+                contract += '2. Состояние квартиры:\n';
+                contract += `${data.apartmentCondition}\n\n`;
+            } else {
+                contract += '2. Состояние квартиры: соответствует нормальному износу, пригодно для проживания.\n\n';
+            }
+
+            // Показания счётчиков
+            contract += '3. Показания приборов учёта на момент передачи:\n';
+            if (data.electricityMeter) {
+                contract += `- Электроэнергия: ${data.electricityMeter} кВт⋅ч\n`;
+            } else {
+                contract += '- Электроэнергия: не указано\n';
+            }
+            if (data.coldWaterMeter) {
+                contract += `- Холодная вода: ${data.coldWaterMeter} м³\n`;
+            } else {
+                contract += '- Холодная вода: не указано\n';
+            }
+            if (data.hotWaterMeter) {
+                contract += `- Горячая вода: ${data.hotWaterMeter} м³\n`;
+            } else {
+                contract += '- Горячая вода: не указано\n';
+            }
+            contract += '\n';
+
+            // Ключи
+            contract += `4. Количество комплектов ключей, переданных Нанимателю: ${data.keysCount} ${data.keysCount === 1 ? 'комплект' : data.keysCount < 5 ? 'комплекта' : 'комплектов'}.\n\n`;
+
+            // Заключение акта
+            contract += 'Квартира и имущество переданы в состоянии, соответствующем описанию, с учётом нормального износа.\n\n';
+            contract += 'Претензий к состоянию квартиры и имущества у Нанимателя не имеется.\n\n';
+
+            contract += 'ПОДПИСИ СТОРОН:\n\n';
+            contract += 'Наймодатель: _________________ / ' + data.landlordName + ' /\n\n';
+            contract += 'Наниматель: _________________ / ' + data.tenantName + ' /\n\n';
+
+            return contract;
+        }
+
+        /**
+         * Генерация Word-файла
+         */
+        function generateWord(text, filename) {
+            // Обработка текста для правильного форматирования абзацев
+            let htmlText = text;
+            
+            // Заменяем разделители на горизонтальные линии
+            htmlText = htmlText.replace(/═══════════════════════════════════════════════════════════════/g, '<hr>');
+            
+            // Разделяем текст на абзацы по двойным переводам строк
+            // Сначала заменяем тройные и более переводы строк на двойные
+            htmlText = htmlText.replace(/\n{3,}/g, '\n\n');
+            
+            // Разбиваем на абзацы
+            const paragraphs = htmlText.split(/\n\n+/);
+            
+            // Обрабатываем каждый абзац
+            let processedText = paragraphs.map(para => {
+                para = para.trim();
+                if (!para) return '';
+                
+                // Определяем, является ли это заголовком (все заглавные буквы, короткая строка, без точки в конце)
+                const isHeading = para.length < 100 && 
+                                 /^[А-ЯЁ\s\d\.\:\-\(\)]+$/.test(para) && 
+                                 !para.endsWith('.') && 
+                                 !para.endsWith(',');
+                
+                // Если это заголовок, оборачиваем в h2
+                if (isHeading) {
+                    return `<h2>${para.replace(/\n/g, ' ')}</h2>`;
+                }
+                
+                // Обычный абзац: одиночные переводы строк заменяем на <br>
+                const paraContent = para.replace(/\n/g, '<br>');
+                
+                // Определяем, нужен ли отступ (для подпунктов и списков - нет)
+                const needsIndent = !para.match(/^\d+\.\d+\./) && 
+                                   !para.match(/^[А-ЯЁ]\.\d+\./) &&
+                                   !para.match(/^[А-ЯЁ]\.\d+\.\d+\./) &&
+                                   !para.match(/^-\s/) &&
+                                   !para.match(/^ПОДПИСИ СТОРОН/);
+                
+                const indentClass = needsIndent ? '' : ' class="no-indent"';
+                return `<p${indentClass}>${paraContent}</p>`;
+            }).filter(p => p).join('\n');
+            
+            // Создаём HTML-структуру для Word
+            const htmlContent = `<!DOCTYPE html>
+<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
+<head>
+    <meta charset="UTF-8">
+    <meta name="ProgId" content="Word.Document">
+    <meta name="Generator" content="Microsoft Word">
+    <meta name="Originator" content="Microsoft Word">
+    <title>Договор найма</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 2.5cm 2cm 2.5cm 2cm;
+        }
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 12pt;
+            line-height: 1.5;
+            text-align: left;
+        }
+        h1 {
+            font-size: 16pt;
+            font-weight: bold;
+            text-align: center;
+            margin: 20pt 0;
+        }
+        h2 {
+            font-size: 14pt;
+            font-weight: bold;
+            margin: 15pt 0 10pt 0;
+            text-indent: 0;
+            text-align: center;
+        }
+        p {
+            margin: 6pt 0;
+            text-indent: 1.25cm;
+            text-align: left;
+        }
+        .no-indent {
+            text-indent: 0;
+        }
+        .signature {
+            margin-top: 30pt;
+        }
+        hr {
+            border: none;
+            border-top: 1px solid #000;
+            margin: 20pt 0;
+        }
+    </style>
+</head>
+<body>
+${processedText}
+</body>
+</html>`;
+
+            // Создаём Blob
+            const blob = new Blob(['\ufeff', htmlContent], {
+                type: 'application/msword'
+            });
+
+            // Создаём ссылку для скачивания
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
+
+        /**
+         * Обработка отправки формы
+         */
+        document.getElementById('contractForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            if (!validateForm()) {
+                showNotification('Пожалуйста, заполните все обязательные поля и исправьте ошибки', 'error');
+                return;
+            }
+
+            // Сбор данных формы
+            const formData = new FormData(this);
+            const data = {};
+            for (const [key, value] of formData.entries()) {
+                data[key] = value.trim();
+            }
+
+            // Преобразование числовых полей
+            if (data.apartmentFloor) data.apartmentFloor = parseInt(data.apartmentFloor);
+            if (data.apartmentRooms) data.apartmentRooms = parseInt(data.apartmentRooms);
+            if (data.apartmentArea) data.apartmentArea = parseFloat(data.apartmentArea);
+            if (data.monthlyRent) data.monthlyRent = parseFloat(data.monthlyRent);
+            if (data.deposit) data.deposit = parseFloat(data.deposit);
+            if (data.paymentDay) data.paymentDay = parseInt(data.paymentDay);
+            if (data.electricityMeter) data.electricityMeter = parseFloat(data.electricityMeter);
+            if (data.coldWaterMeter) data.coldWaterMeter = parseFloat(data.coldWaterMeter);
+            if (data.hotWaterMeter) data.hotWaterMeter = parseFloat(data.hotWaterMeter);
+            if (data.keysCount) data.keysCount = parseInt(data.keysCount);
+
+            // Генерация текста договора
+            const contractText = generateContractText(data);
+
+            // Формирование имени файла
+            const tenantNameForFile = data.tenantName.replace(/\s+/g, '_');
+            const today = new Date().toISOString().split('T')[0];
+            const filename = `Dogovor_naima_kvartiry_${tenantNameForFile}_${today}.doc`;
+
+            // Генерация и скачивание Word-файла
+            generateWord(contractText, filename);
+
+            showNotification('Договор успешно сгенерирован и загружается!', 'success');
+        });
+
+        /**
+         * Очистка формы
+         */
+        document.getElementById('clearBtn').addEventListener('click', function() {
+            if (confirm('Вы уверены, что хотите очистить все поля формы?')) {
+                document.getElementById('contractForm').reset();
+                document.querySelectorAll('.form-group').forEach(group => {
+                    group.classList.remove('error');
+                });
+                showNotification('Форма очищена', 'success');
+            }
+        });
+
+        /**
+         * Инициализация мобильного меню
+         */
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuToggle = document.querySelector('.menu-toggle');
+            const navMenu = document.querySelector('.nav-menu');
+
+            if (menuToggle && navMenu) {
+                menuToggle.addEventListener('click', function() {
+                    navMenu.classList.toggle('active');
+                });
+
+                // Закрываем меню при клике на ссылку
+                navMenu.querySelectorAll('a').forEach(link => {
+                    link.addEventListener('click', function() {
+                        navMenu.classList.remove('active');
+                    });
+                });
+            }
+        });
+    </script>
+</body>
+</html>
+

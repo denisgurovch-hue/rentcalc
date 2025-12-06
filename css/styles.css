@@ -784,6 +784,291 @@ a:hover {
   }
 }
 
+/* === Comparison Page Styles === */
+.comparison-settings {
+  margin-bottom: var(--spacing-xl);
+  padding-bottom: var(--spacing-lg);
+  border-bottom: 2px solid var(--border-color);
+}
+
+.comparison-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-xl);
+  margin-bottom: var(--spacing-lg);
+}
+
+.comparison-column {
+  padding: var(--spacing-lg);
+  background: var(--bg-secondary);
+  border-radius: var(--radius-lg);
+}
+
+.comparison-column h3 {
+  margin-bottom: var(--spacing-md);
+  color: var(--primary-color);
+}
+
+/* Toggle Switch */
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.toggle-switch input[type="checkbox"] {
+  display: none;
+}
+
+.toggle-switch label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  background: var(--bg-primary);
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  font-weight: 500;
+  min-height: 48px;
+}
+
+.toggle-switch label:hover {
+  border-color: var(--primary-color);
+}
+
+.toggle-switch input[type="checkbox"]:checked + label {
+  background: rgba(102, 126, 234, 0.1);
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}
+
+.toggle-switch input[type="checkbox"]:checked + label .toggle-label-off {
+  display: none;
+}
+
+.toggle-switch input[type="checkbox"]:not(:checked) + label .toggle-label-on {
+  display: none;
+}
+
+.toggle-switch label::after {
+  content: '';
+  position: absolute;
+  right: 1rem;
+  width: 40px;
+  height: 20px;
+  background: var(--border-color);
+  border-radius: 10px;
+  transition: all var(--transition-fast);
+}
+
+.toggle-switch input[type="checkbox"]:checked + label::after {
+  background: var(--primary-color);
+}
+
+.toggle-switch label::before {
+  content: '';
+  position: absolute;
+  right: 1.25rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  background: white;
+  border-radius: 50%;
+  transition: all var(--transition-fast);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.toggle-switch input[type="checkbox"]:checked + label::before {
+  transform: translateY(-50%) translateX(20px);
+}
+
+.toggle-label-off,
+.toggle-label-on {
+  flex: 1;
+  text-align: left;
+}
+
+/* Comparison Results */
+.comparison-results {
+  margin-top: var(--spacing-xl);
+  padding: var(--spacing-lg);
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+  border-radius: var(--radius-lg);
+  border: 2px solid rgba(102, 126, 234, 0.1);
+}
+
+.comparison-results h3 {
+  margin-bottom: var(--spacing-lg);
+  color: var(--text-primary);
+}
+
+.comparison-table-wrapper {
+  overflow-x: auto;
+  margin-bottom: var(--spacing-lg);
+}
+
+.comparison-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--bg-primary);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.comparison-table thead {
+  background: var(--primary-gradient);
+  color: white;
+}
+
+.comparison-table th {
+  padding: var(--spacing-md);
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.comparison-table th:first-child {
+  width: 40%;
+}
+
+.comparison-table tbody tr {
+  border-bottom: 1px solid var(--border-color);
+  transition: background-color var(--transition-fast);
+}
+
+.comparison-table tbody tr:hover {
+  background: var(--bg-secondary);
+}
+
+.comparison-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.comparison-table td {
+  padding: var(--spacing-md);
+  color: var(--text-primary);
+}
+
+.comparison-table td:first-child {
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.comparison-table td:not(:first-child) {
+  font-weight: 600;
+  color: var(--text-primary);
+  text-align: right;
+}
+
+.comparison-table .no-data {
+  color: var(--text-light);
+  font-style: italic;
+}
+
+/* Comparison Summary */
+.comparison-summary {
+  margin-top: var(--spacing-lg);
+  padding: var(--spacing-lg);
+  background: white;
+  border-radius: var(--radius-md);
+  border-left: 4px solid var(--primary-color);
+}
+
+.comparison-summary .summary-content p {
+  margin-bottom: var(--spacing-sm);
+  color: var(--text-primary);
+}
+
+.comparison-summary .summary-content ul {
+  margin: var(--spacing-md) 0;
+  padding-left: var(--spacing-lg);
+}
+
+.comparison-summary .summary-content li {
+  margin-bottom: var(--spacing-xs);
+  color: var(--text-secondary);
+}
+
+.comparison-summary .conclusion {
+  margin-top: var(--spacing-md);
+  padding: var(--spacing-md);
+  background: rgba(102, 126, 234, 0.05);
+  border-radius: var(--radius-sm);
+  font-weight: 500;
+  color: var(--text-primary) !important;
+}
+
+/* Responsive for Comparison */
+@media (max-width: 968px) {
+  .comparison-form-grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-lg);
+  }
+
+  .comparison-table {
+    font-size: 0.9rem;
+  }
+
+  .comparison-table th,
+  .comparison-table td {
+    padding: var(--spacing-sm);
+  }
+
+  .comparison-table th:first-child {
+    width: 35%;
+  }
+}
+
+@media (max-width: 768px) {
+  .comparison-table {
+    font-size: 0.85rem;
+  }
+
+  .comparison-table th,
+  .comparison-table td {
+    padding: 0.5rem;
+  }
+
+  .toggle-switch label {
+    font-size: 0.9rem;
+  }
+}
+
+/* === Investment Calculator Specific === */
+.scenario-section {
+  margin-bottom: var(--spacing-xl);
+}
+
+.scenario-section .section-header {
+  text-align: left;
+  margin-bottom: var(--spacing-md);
+}
+
+.scenario-section .section-header h3 {
+  color: var(--primary-color);
+  font-size: 1.25rem;
+  margin-bottom: var(--spacing-sm);
+}
+
+.results-note {
+  margin-top: var(--spacing-lg);
+  padding: var(--spacing-md);
+  background: rgba(102, 126, 234, 0.05);
+  border-radius: var(--radius-md);
+  border-left: 4px solid var(--primary-color);
+}
+
+.results-note p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
 /* === Utilities === */
 .hidden {
   display: none !important;

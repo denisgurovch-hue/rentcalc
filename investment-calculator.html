@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Yandex.Metrika counter -->
+  <script type="text/javascript">
+    (function (m, e, t, r, i, k, a) {
+      m[i] = m[i] || function () { (m[i].a = m[i].a || []).push(arguments) };
+      m[i].l = 1 * new Date();
+      for (var j = 0; j < document.scripts.length; j++) { if (document.scripts[j].src === r) { return; } }
+      k = e.createElement(t), a = e.getElementsByTagName(t)[0], k.async = 1, k.src = r, a.parentNode.insertBefore(k, a)
+    })(window, document, 'script', 'https://mc.yandex.ru/metrika/tag.js?id=105579895', 'ym');
+
+    ym(105579895, 'init', { ssr: true, webvisor: true, clickmap: true, ecommerce: "dataLayer", accurateTrackBounce: true, trackLinks: true });
+  </script>
+  <noscript>
+    <div><img src="https://mc.yandex.ru/watch/105579895" style="position:absolute; left:-9999px;" alt="" /></div>
+  </noscript>
+  <!-- /Yandex.Metrika counter -->
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-P7CEXK06Y1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-P7CEXK06Y1');
+  </script>
+  <title>Инвестиционный калькулятор недвижимости — сравнить доходность аренды, ипотеки и вклада онлайн</title>
+  <meta name="description"
+    content="Онлайн инвестиционный калькулятор недвижимости RentCalc помогает рассчитать и сравнить доходность покупки квартиры за наличные, в ипотеку и банковского вклада с учётом аренды, роста цен, налогов в России и стоимости денег во времени. Узнайте, какой вариант инвестиций в недвижимость выгоднее именно для вас.">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-container">
+      <div class="logo">RentCalc</div>
+      <button class="menu-toggle" aria-label="Меню">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <nav>
+        <ul class="nav-menu">
+          <li><a href="/">Калькулятор</a></li>
+          <li><a href="/blog/">Блог</a></li>
+          <li><a href="/rental-contract.html">Договор</a></li>
+          <li><a href="/investment-calculator.html" class="active">Инвестиции</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <h1>Инвестиционный калькулятор в недвижимость</h1>
+      <p>Сравните три сценария использования капитала: покупка за наличные, покупка в ипотеку и банковский вклад</p>
+    </div>
+  </section>
+
+  <!-- SEO Text Section -->
+  <section class="seo-text-section" style="padding: var(--spacing-xl) 0; background: var(--bg-primary);">
+    <div class="container">
+      <div class="container-narrow">
+        <div style="margin-bottom: var(--spacing-lg); text-align: center;">
+          <img src="investment-calculator.png" alt="Инвестиционный калькулятор недвижимости RentCalc" 
+               style="max-width: 100%; height: auto; border-radius: var(--radius-lg); box-shadow: var(--shadow-md);">
+        </div>
+        <div style="color: var(--text-secondary); line-height: 1.8; font-size: 1.05rem;">
+          <p style="margin-bottom: var(--spacing-md);">
+            Инвестиционный калькулятор недвижимости RentCalc позволяет быстро оценить и сравнить доходность покупки квартиры за наличные или в ипотеку и размещения денег на банковском вкладе. В расчёте учитываются арендный доход, рост стоимости квартиры и аренды, расходы на содержание, ипотечные платежи и налоги по российскому законодательству, включая льготы по налогу на имущество и налог на проценты по вкладам.
+          </p>
+          <p style="margin-bottom: 0;">
+            Сервис помогает частным инвесторам и будущим арендодателям понять, какой сценарий вложений выгоднее: сдавать квартиру, использовать ипотеку для инвестиций в недвижимость или оставить деньги на депозите. Калькулятор показывает NPV, среднегодовую доходность и итоговую сумму капитала, чтобы можно было принимать решения на основе цифр, а не интуиции.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Calculator Section -->
+  <section class="calculator-section">
+    <div class="container">
+      <div class="calculator-card">
+
+        <!-- General Parameters -->
+        <div class="section-header">
+          <h3>Общие параметры</h3>
+        </div>
+
+        <div class="input-group">
+          <div class="form-group">
+            <label for="horizon" class="form-label">Горизонт моделирования, лет (T)</label>
+            <input type="number" id="horizon" class="form-input" placeholder="10" value="10" min="1" max="50" step="1"
+              required>
+          </div>
+
+          <div class="form-group">
+            <label for="discount-rate" class="form-label">Ставка дисконтирования, % годовых (r)</label>
+            <input type="number" id="discount-rate" class="form-input" placeholder="8" value="8" min="0" max="50"
+              step="0.1" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Режим вывода</label>
+          <div class="mode-toggle">
+            <button type="button" class="mode-btn active" data-output-mode="nominal">Номинальные рубли</button>
+            <button type="button" class="mode-btn" data-output-mode="npv">В рублях сегодня (NPV)</button>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <div class="form-group">
+            <label for="tax-free-limit" class="form-label">Необлагаемый лимит по процентам, ₽ в год</label>
+            <input type="number" id="tax-free-limit" class="form-input" placeholder="210000" value="210000" min="0"
+              step="1000" required>
+            <small style="color: var(--text-light); font-size: 0.85rem;">Лимит для налога на проценты по вкладам</small>
+          </div>
+
+          <div class="form-group">
+            <label for="deposit-tax-rate" class="form-label">Ставка НДФЛ на проценты, %</label>
+            <input type="number" id="deposit-tax-rate" class="form-input" placeholder="13" value="13" min="0" max="100"
+              step="0.1" required>
+          </div>
+        </div>
+
+        <hr style="margin: var(--spacing-xl) 0; border: none; border-top: 2px solid var(--border-color);">
+
+        <!-- Scenario 1: Cash Purchase -->
+        <div class="scenario-section">
+          <div class="section-header">
+            <h3>Сценарий 1: Квартира за наличные + аренда</h3>
+          </div>
+
+          <div class="input-group">
+            <div class="form-group">
+              <label for="scenario1-price" class="form-label">Стоимость квартиры, ₽</label>
+              <input type="number" id="scenario1-price" class="form-input" placeholder="5000000" value="5000000"
+                step="100000" required>
+            </div>
+
+            <div class="form-group">
+              <label for="scenario1-area" class="form-label">Площадь квартиры, м²</label>
+              <input type="number" id="scenario1-area" class="form-input" placeholder="40" value="40" min="1" step="1"
+                required>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <div class="form-group">
+              <label for="scenario1-onetime-costs" class="form-label">Единовременные затраты на сделку, ₽</label>
+              <input type="number" id="scenario1-onetime-costs" class="form-input" placeholder="200000" value="200000"
+                step="10000" required>
+              <small style="color: var(--text-light); font-size: 0.85rem;">Ремонт, мебель, комиссия, регистрация</small>
+            </div>
+
+            <div class="form-group">
+              <label for="scenario1-cadastral" class="form-label">Кадастровая стоимость, ₽ (опционально)</label>
+              <input type="number" id="scenario1-cadastral" class="form-input" placeholder="5000000" value="5000000"
+                step="100000">
+              <small style="color: var(--text-light); font-size: 0.85rem;">Если не указана, равна стоимости квартиры</small>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <div class="form-group">
+              <label for="scenario1-property-tax-rate" class="form-label">Ставка налога на имущество, % годовых</label>
+              <input type="number" id="scenario1-property-tax-rate" class="form-input" placeholder="0.1" value="0.1"
+                min="0" max="5" step="0.01" required>
+              <small style="color: var(--text-light); font-size: 0.85rem;">Применяется только если площадь ≥ 20 м²</small>
+            </div>
+
+            <div class="form-group">
+              <label for="scenario1-rental-tax-rate" class="form-label">Ставка налога на доход от аренды, %</label>
+              <input type="number" id="scenario1-rental-tax-rate" class="form-input" placeholder="13" value="13" min="0"
+                max="100" step="0.1" required>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <div class="form-group">
+              <label for="scenario1-monthly-rent" class="form-label">Ежемесячная аренда в первый год, ₽</label>
+              <input type="number" id="scenario1-monthly-rent" class="form-input" placeholder="35000" value="35000"
+                step="1000" required>
+            </div>
+
+            <div class="form-group">
+              <label for="scenario1-vacancy" class="form-label">Простой: доля месяцев без арендатора, %</label>
+              <input type="number" id="scenario1-vacancy" class="form-input" placeholder="8" value="8" min="0" max="100"
+                step="0.1" required>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <div class="form-group">
+              <label for="scenario1-annual-expenses" class="form-label">Ежегодные эксплуатационные расходы, ₽</label>
+              <input type="number" id="scenario1-annual-expenses" class="form-input" placeholder="60000" value="60000"
+                step="5000" required>
+              <small style="color: var(--text-light); font-size: 0.85rem;">ЖКХ, управление, страховка</small>
+            </div>
+
+            <div class="form-group">
+              <label for="scenario1-rent-growth" class="form-label">Годовой рост арендной ставки, %</label>
+              <input type="number" id="scenario1-rent-growth" class="form-input" placeholder="5" value="5" min="0"
+                max="50" step="0.1" required>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <div class="form-group">
+              <label for="scenario1-price-growth" class="form-label">Годовой рост стоимости недвижимости, %</label>
+              <input type="number" id="scenario1-price-growth" class="form-input" placeholder="3" value="3" min="0"
+                max="50" step="0.1" required>
+            </div>
+
+            <div class="form-group">
+              <label for="scenario1-months-to-commissioning" class="form-label">Месяцев до ввода в эксплуатацию</label>
+              <input type="number" id="scenario1-months-to-commissioning" class="form-input" placeholder="0" value="0"
+                min="0" max="60" step="1" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="scenario1-months-to-renovation" class="form-label">Месяцев на ремонт</label>
+            <input type="number" id="scenario1-months-to-renovation" class="form-input" placeholder="2" value="2"
+              min="0" max="60" step="1" required>
+          </div>
+        </div>
+
+        <hr style="margin: var(--spacing-xl) 0; border: none; border-top: 2px solid var(--border-color);">
+
+        <!-- Scenario 2: Mortgage Purchase -->
+        <div class="scenario-section">
+          <div class="section-header">
+            <h3>Сценарий 2: Квартира в ипотеку + аренда</h3>
+          </div>
+
+          <div class="input-group">
+            <div class="form-group">
+              <label for="scenario2-price" class="form-label">Стоимость квартиры, ₽</label>
+              <input type="number" id="scenario2-price" class="form-input" placeholder="5000000" value="5000000"
+                step="100000" required>
+            </div>
+
+            <div class="form-group">
+              <label for="scenario2-area" class="form-label">Площадь квартиры, м²</label>
+              <input type="number" id="scenario2-area" class="form-input" placeholder="40" value="40" min="1" step="1"
+                required>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <div class="form-group">
+              <label for="scenario2-down-payment" class="form-label">Первоначальный взнос, ₽</label>
+              <input type="number" id="scenario2-down-payment" class="form-input" placeholder="1500000" value="1500000"
+                step="100000" required>
+            </div>
+
+            <div class="form-group">
+              <label for="scenario2-loan-amount" class="form-label">Сумма кредита, ₽</label>
+              <input type="number" id="scenario2-loan-amount" class="form-input" placeholder="3500000" value="3500000"
+                step="100000" required>
+              <small style="color: var(--text-light); font-size: 0.85rem;">Автоматически = цена - взнос</small>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <div class="form-group">
+              <label for="scenario2-interest-rate" class="form-label">Ставка ипотеки, % годовых</label>
+              <input type="number" id="scenario2-interest-rate" class="form-input" placeholder="12" value="12" min="0"
+                max="50" step="0.1" required>
+            </div>
+
+            <div class="form-group">
+              <label for="scenario2-loan-term" class="form-label">Срок кредита, лет</label>
+              <input type="number" id="scenario2-loan-term" class="form-input" placeholder="20" value="20" min="1"
+                max="30" step="1" required>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <div class="form-group">
+              <label for="scenario2-onetime-costs" class="form-label">Разовые расходы на сделку, ₽</label>
+              <input type="number" id="scenario2-onetime-costs" class="form-input" placeholder="150000" value="150000"
+                step="10000" required>
+              <small style="color: var(--text-light); font-size: 0.85rem;">Страховка, оценка, комиссия банка</small>
+            </div>
+
+            <div class="form-group">
+              <label for="scenario2-cadastral" class="form-label">Кадастровая стоимость, ₽ (опционально)</label>
+              <input type="number" id="scenario2-cadastral" class="form-input" placeholder="5000000" value="5000000"
+                step="100000">
+            </div>
+          </div>
+
+          <div class="input-group">
+            <div class="form-group">
+              <label for="scenario2-property-tax-rate" class="form-label">Ставка налога на имущество, % годовых</label>
+              <input type="number" id="scenario2-property-tax-rate" class="form-input" placeholder="0.1" value="0.1"
+                min="0" max="5" step="0.01" required>
+            </div>
+
+            <div class="form-group">
+              <label for="scenario2-rental-tax-rate" class="form-label">Ставка налога на доход от аренды, %</label>
+              <input type="number" id="scenario2-rental-tax-rate" class="form-input" placeholder="13" value="13" min="0"
+                max="100" step="0.1" required>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <div class="form-group">
+              <label for="scenario2-monthly-rent" class="form-label">Ежемесячная аренда в первый год, ₽</label>
+              <input type="number" id="scenario2-monthly-rent" class="form-input" placeholder="35000" value="35000"
+                step="1000" required>
+            </div>
+
+            <div class="form-group">
+              <label for="scenario2-vacancy" class="form-label">Простой: доля месяцев без арендатора, %</label>
+              <input type="number" id="scenario2-vacancy" class="form-input" placeholder="8" value="8" min="0" max="100"
+                step="0.1" required>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <div class="form-group">
+              <label for="scenario2-annual-expenses" class="form-label">Ежегодные эксплуатационные расходы, ₽</label>
+              <input type="number" id="scenario2-annual-expenses" class="form-input" placeholder="60000" value="60000"
+                step="5000" required>
+            </div>
+
+            <div class="form-group">
+              <label for="scenario2-rent-growth" class="form-label">Годовой рост арендной ставки, %</label>
+              <input type="number" id="scenario2-rent-growth" class="form-input" placeholder="5" value="5" min="0"
+                max="50" step="0.1" required>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <div class="form-group">
+              <label for="scenario2-price-growth" class="form-label">Годовой рост стоимости недвижимости, %</label>
+              <input type="number" id="scenario2-price-growth" class="form-input" placeholder="3" value="3" min="0"
+                max="50" step="0.1" required>
+            </div>
+
+            <div class="form-group">
+              <label for="scenario2-months-to-commissioning" class="form-label">Месяцев до ввода в эксплуатацию</label>
+              <input type="number" id="scenario2-months-to-commissioning" class="form-input" placeholder="0" value="0"
+                min="0" max="60" step="1" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="scenario2-months-to-renovation" class="form-label">Месяцев на ремонт</label>
+            <input type="number" id="scenario2-months-to-renovation" class="form-input" placeholder="2" value="2"
+              min="0" max="60" step="1" required>
+          </div>
+        </div>
+
+        <hr style="margin: var(--spacing-xl) 0; border: none; border-top: 2px solid var(--border-color);">
+
+        <!-- Scenario 3: Bank Deposit -->
+        <div class="scenario-section">
+          <div class="section-header">
+            <h3>Сценарий 3: Банковский вклад</h3>
+          </div>
+
+          <div class="input-group">
+            <div class="form-group">
+              <label for="scenario3-deposit-amount" class="form-label">Сумма вклада, ₽</label>
+              <input type="number" id="scenario3-deposit-amount" class="form-input" placeholder="5200000"
+                value="5200000" step="100000" required>
+              <small style="color: var(--text-light); font-size: 0.85rem;">По умолчанию = стоимость квартиры + затраты</small>
+            </div>
+
+            <div class="form-group">
+              <label for="scenario3-deposit-term" class="form-label">Срок вклада, лет</label>
+              <input type="number" id="scenario3-deposit-term" class="form-input" placeholder="10" value="10" min="1"
+                max="50" step="1" required>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <div class="form-group">
+              <label for="scenario3-deposit-rate" class="form-label">Ставка по вкладу, % годовых</label>
+              <input type="number" id="scenario3-deposit-rate" class="form-input" placeholder="8" value="8" min="0"
+                max="50" step="0.1" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Режим капитализации</label>
+              <div class="mode-toggle" style="margin-top: 0.5rem;">
+                <button type="button" class="mode-btn" data-capitalization="false">Без капитализации</button>
+                <button type="button" class="mode-btn active" data-capitalization="true">С капитализацией</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="button" id="calculate-btn" class="btn btn-primary btn-lg"
+          style="width: 100%; margin-top: var(--spacing-lg);">
+          Рассчитать и сравнить сценарии
+        </button>
+
+        <!-- Results Table -->
+        <div id="results-section" class="results hidden">
+          <h3>Сравнение сценариев</h3>
+          <div style="overflow-x: auto; margin-top: var(--spacing-lg);">
+            <table class="comparison-table">
+              <thead>
+                <tr>
+                  <th>Показатель</th>
+                  <th>Квартира (наличка)</th>
+                  <th>Квартира (ипотека)</th>
+                  <th>Банковский вклад</th>
+                </tr>
+              </thead>
+              <tbody id="results-table-body">
+                <!-- Results will be inserted here -->
+              </tbody>
+            </table>
+          </div>
+
+          <div class="results-note" style="margin-top: var(--spacing-lg); padding: var(--spacing-md); background: rgba(102, 126, 234, 0.05); border-radius: var(--radius-md); border-left: 4px solid var(--primary-color);">
+            <p style="margin: 0; color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6;">
+              <strong>Важно:</strong> Расчёты ориентированы на российские условия. Учтены ключевые налоговые особенности 
+              (вычет 20 м² по налогу на имущество и лимит по процентам по вкладам через параметр необлагаемого дохода), 
+              но точные налоговые обязательства зависят от законодательства и нужно проверять их отдельно.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-about">
+        <h3>RentCalc</h3>
+        <p>Калькулятор реальной доходности аренды недвижимости. Учитываем все расходы, риски и помогаем принять
+          обоснованное инвестиционное решение.</p>
+      </div>
+      <div class="footer-links">
+        <h4>Навигация</h4>
+        <ul>
+          <li><a href="/">Калькулятор</a></li>
+          <li><a href="/blog/">Блог</a></li>
+          <li><a href="/rental-contract.html">Договор</a></li>
+          <li><a href="/investment-calculator.html">Инвестиции</a></li>
+        </ul>
+      </div>
+      <div class="footer-links">
+        <h4>Информация</h4>
+        <ul>
+          <li><a href="about.html">О проекте</a></li>
+          <li><a href="contacts.html">Контакты</a></li>
+          <li><a href="privacy.html">Политика конфиденциальности</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2025 RentCalc. Все права защищены.</p>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/calculations.js"></script>
+  <script src="js/investment-calculator.js"></script>
+  <script src="js/script.js"></script>
+
+</body>
+
+</html>
+

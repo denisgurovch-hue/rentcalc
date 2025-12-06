@@ -181,6 +181,6 @@ function initMobileMenu() {
 function loadFromBlogWidget() {
     const container = document.getElementById('from-blog-grid');
     if (container) {
-        renderFromBlogWidget(3, 'from-blog-grid');
+        renderFromBlogWidget(5, 'from-blog-grid');
     }
 }

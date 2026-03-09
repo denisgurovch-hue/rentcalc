@@ -5,6 +5,15 @@
 let currentMode = 'basic';
 let cashflowChart = null; // График
 
+/**
+ * Безопасная отправка целей в Яндекс.Метрику
+ */
+function trackGoal(goalName) {
+    if (typeof ym === 'function') {
+        ym(105579895, 'reachGoal', goalName);
+    }
+}
+
 // Инициализация при загрузке страницы
 document.addEventListener('DOMContentLoaded', function () {
     initModeToggle();
@@ -68,6 +77,8 @@ function initCalculator() {
  * Расчёт и отображение результатов
  */
 function calculateResults() {
+    trackGoal('calculate_click');
+
     // Получаем базовые значения
     const price = parseFloat(document.getElementById('price').value) || 0;
     const monthlyRent = parseFloat(document.getElementById('monthly-rent').value) || 0;

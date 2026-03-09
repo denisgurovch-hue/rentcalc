@@ -184,6 +184,11 @@
               <div class="result-value" id="result-npv">0 ₽</div>
             </div>
           </div>
+          
+          <!-- Chart Container -->
+          <div class="chart-container" id="chart-container" style="margin-top: var(--spacing-lg); height: 300px; display: none;">
+            <canvas id="cashflow-chart"></canvas>
+          </div>
         </div>
 
       </div>
@@ -234,6 +239,7 @@
   </footer>
 
   <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="js/calculations.js"></script>
   <script src="js/blog-data.js"></script>
   <script src="js/blog.js"></script>

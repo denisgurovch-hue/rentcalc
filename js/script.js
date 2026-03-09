@@ -3,6 +3,7 @@
 // ============================================
 
 let currentMode = 'basic';
+let cashflowChart = null; // График
 
 // Инициализация при загрузке страницы
 document.addEventListener('DOMContentLoaded', function () {
@@ -120,6 +121,76 @@ function displayProResults(mortgagePayment, cocResults, npv) {
     document.getElementById('result-cash-flow').textContent = formatCurrency(cocResults.yearlyCashFlow);
     document.getElementById('result-coc').textContent = formatPercent(cocResults.cashOnCashReturn);
     document.getElementById('result-npv').textContent = formatCurrency(npv);
+    
+    renderCashflowChart(cocResults.yearlyCashFlow, 10);
+}
+
+/**
+ * Отрисовка графика Cash Flow по годам
+ */
+function renderCashflowChart(yearlyCashFlow, years) {
+    const ctx = document.getElementById('cashflow-chart');
+    const container = document.getElementById('chart-container');
+    if (!ctx || !container) return;
+    
+    // Подготовка данных
+    const labels = [];
+    const data = [];
+    let cumulative = 0;
+    
+    for (let i = 1; i <= years; i++) {
+        labels.push(`Год ${i}`);
+        cumulative += yearlyCashFlow;
+        data.push(cumulative);
+    }
+    
+    // Удаляем старый график, если есть
+    if (cashflowChart) {
+        cashflowChart.destroy();
+    }
+    
+    container.style.display = 'block'; // Показываем контейнер
+    
+    cashflowChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Накопленный денежный поток (₽)',
+                data: data,
+                backgroundColor: 'rgba(37, 99, 235, 0.5)', // primary-color с альфа-каналом
+                borderColor: '#2563eb', // primary-color
+                borderWidth: 1,
+                borderRadius: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'top' },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return new Intl.NumberFormat('ru-RU').format(context.parsed.y) + ' ₽';
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            if (Math.abs(value) >= 1000000) return (value / 1000000).toFixed(1) + 'М ₽';
+                            if (Math.abs(value) >= 1000) return (value / 1000).toFixed(0) + 'К ₽';
+                            return value + ' ₽';
+                        }
+                    }
+                }
+            }
+        }
+    });
 }
 
 /**

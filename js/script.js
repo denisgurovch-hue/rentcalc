@@ -55,6 +55,10 @@ function switchMode(mode) {
         proSection.classList.toggle('hidden', mode === 'basic');
     }
 
+    if (mode === 'pro') {
+        trackGoal('switch_pro');
+    }
+
     // Скрываем результаты при переключении режима
     hideResults();
 }

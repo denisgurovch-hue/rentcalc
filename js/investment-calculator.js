@@ -141,9 +141,14 @@ function calculateScenario1(horizon, discountRate) {
 
     // Массивы для хранения денежных потоков
     const cashFlows = [];
+    const yearlyEquity = [];
+    yearlyEquity.push(initialInvestment);
     let accumulatedRentalIncome = 0;
     let totalPropertyTax = 0;
     let totalRentalTax = 0;
+    const yearlyEquity = [];
+    let currentEquityFlow = 0;
+    yearlyEquity.push(initialInvestment);
 
     // Начальный отток
     cashFlows.push({
@@ -249,6 +254,7 @@ function calculateScenario1(horizon, discountRate) {
     const npvBasedYield = (Math.pow((npv + initialInvestment) / initialInvestment, 1 / horizon) - 1) * 100;
 
     return {
+        yearlyEquity,
         initialInvestment: initialInvestment,
         loanAmount: 0,
         area: area,
@@ -425,6 +431,7 @@ function calculateScenario2(horizon, discountRate) {
     const npvBasedYield = (Math.pow((npv + initialInvestment) / initialInvestment, 1 / horizon) - 1) * 100;
 
     return {
+        yearlyEquity,
         initialInvestment: initialInvestment,
         loanAmount: loanAmount,
         area: area,
@@ -542,6 +549,7 @@ function calculateScenario3(horizon, discountRate, taxFreeLimit, depositTaxRate)
     const npvBasedYield = (Math.pow((npv + initialInvestment) / initialInvestment, 1 / effectiveTerm) - 1) * 100;
 
     return {
+        yearlyEquity,
         initialInvestment: initialInvestment,
         loanAmount: 0,
         area: 0,
@@ -680,7 +688,96 @@ function displayResults(scenario1, scenario2, scenario3, outputMode) {
     ];
 
     // Очищаем таблицу
-    tableBody.innerHTML = '';
+    
+    // Отрисовка графика
+    const ctx = document.getElementById('comparisonChart');
+    if (ctx) {
+        if (window.comparisonChartInstance) {
+            window.comparisonChartInstance.destroy();
+        }
+        
+        const labels = [];
+        const horizon = parseFloat(document.getElementById('horizon').value) || 10;
+        for (let i = 0; i <= horizon; i++) {
+            labels.push(i === 0 ? 'Старт' : i + ' год');
+        }
+
+        window.comparisonChartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Квартира (Наличные)',
+                        data: scenario1.yearlyEquity,
+                        borderColor: '#667eea',
+                        backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                        borderWidth: 3,
+                        tension: 0.3,
+                        fill: true
+                    },
+                    {
+                        label: 'Квартира (Ипотека)',
+                        data: scenario2.yearlyEquity,
+                        borderColor: '#38b2ac',
+                        backgroundColor: 'rgba(56, 178, 172, 0.1)',
+                        borderWidth: 3,
+                        tension: 0.3,
+                        fill: true
+                    },
+                    {
+                        label: 'Банковский вклад',
+                        data: scenario3.yearlyEquity,
+                        borderColor: '#ed8936',
+                        backgroundColor: 'rgba(237, 137, 54, 0.1)',
+                        borderWidth: 3,
+                        tension: 0.3,
+                        fill: true
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                interaction: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed.y !== null) {
+                                    label += new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB', maximumFractionDigits: 0 }).format(context.parsed.y);
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        ticks: {
+                            callback: function(value) {
+                                if (value >= 1000000) {
+                                    return (value / 1000000).toFixed(1) + ' млн ₽';
+                                }
+                                return value.toLocaleString('ru-RU') + ' ₽';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+\n    tableBody.innerHTML = '';
 
     // Добавляем строки
     rows.forEach(row => {

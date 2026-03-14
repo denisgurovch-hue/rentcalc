@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /private
+Disallow: /config
+
+# Sitemaps
+Sitemap: https://rentcalc.ru/sitemap.xml
+Host: https://rentcalc.ru

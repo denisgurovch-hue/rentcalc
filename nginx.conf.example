@@ -1,0 +1,18 @@
+server {
+    listen 80;
+    listen [::]:80;
+    server_name www.rentcalc.ru;
+    return 301 https://rentcalc.ru$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    server_name www.rentcalc.ru;
+
+    # SSL certificates here
+    # ssl_certificate /etc/letsencrypt/live/rentcalc.ru/fullchain.pem;
+    # ssl_certificate_key /etc/letsencrypt/live/rentcalc.ru/privkey.pem;
+
+    return 301 https://rentcalc.ru$request_uri;
+}

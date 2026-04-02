@@ -1,0 +1,16 @@
+{
+  "cleanUrls": true,
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.rentcalc.ru"
+        }
+      ],
+      "destination": "https://rentcalc.ru/$1",
+      "permanent": true
+    }
+  ]
+}

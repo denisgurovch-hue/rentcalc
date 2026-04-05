@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', function () {
     initCalculator();
     initMobileMenu();
     loadFromBlogWidget();
+    initWaitlistForm();
 });
 
 /**
@@ -214,6 +215,7 @@ function renderCashflowChart(yearlyCashFlow, years) {
 function showResults() {
     const resultsBasic = document.getElementById('results-basic');
     const resultsPro = document.getElementById('results-pro');
+    const waitlistSection = document.getElementById('waitlist-section');
 
     if (resultsBasic) {
         resultsBasic.classList.remove('hidden');
@@ -223,6 +225,10 @@ function showResults() {
         resultsPro.classList.remove('hidden');
     } else if (resultsPro) {
         resultsPro.classList.add('hidden');
+    }
+
+    if (waitlistSection) {
+        waitlistSection.classList.remove('hidden');
     }
 
     // Плавная прокрутка к результатам
@@ -235,9 +241,11 @@ function showResults() {
 function hideResults() {
     const resultsBasic = document.getElementById('results-basic');
     const resultsPro = document.getElementById('results-pro');
+    const waitlistSection = document.getElementById('waitlist-section');
 
     if (resultsBasic) resultsBasic.classList.add('hidden');
     if (resultsPro) resultsPro.classList.add('hidden');
+    if (waitlistSection) waitlistSection.classList.add('hidden');
 }
 
 /**
@@ -270,3 +278,67 @@ function loadFromBlogWidget() {
         renderFromBlogWidget(5, 'from-blog-grid');
     }
 }
+
+
+/**
+ * Инициализация формы wait-list
+ */
+function initWaitlistForm() {
+    const form = document.getElementById('waitlist-form');
+    if (!form) return;
+
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const emailInput = document.getElementById('waitlist-email');
+        const messageDiv = document.getElementById('waitlist-message');
+        const submitBtn = form.querySelector('button[type="submit"]');
+        
+        if (!emailInput || !emailInput.value) return;
+
+        const email = emailInput.value;
+        const webhookUrl = 'https://6322235-kh988567.twc1.net/webhook/0e4e09c9-b07e-4ffd-92ae-53408372fe28';
+
+        const originalBtnText = submitBtn.textContent;
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Отправка...';
+        
+        messageDiv.style.display = 'none';
+        messageDiv.className = '';
+
+        fetch(webhookUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                email: email,
+                source: 'waitlist',
+                product: 'ai-investment-consultant',
+                page: 'main-calculator'
+            })
+        })
+        .then(response => {
+            if (response.ok) {
+                messageDiv.textContent = 'Спасибо! Мы сообщим, когда AI-консультант станет доступен.';
+                messageDiv.style.color = '#10B981'; 
+                messageDiv.style.display = 'block';
+                form.reset(); 
+            } else {
+                throw new Error('Network response was not ok');
+            }
+        })
+        .catch(error => {
+            console.error('Error submitting waitlist form:', error);
+            messageDiv.textContent = 'Не удалось отправить заявку. Попробуйте еще раз позже.';
+            messageDiv.style.color = '#EF4444'; 
+            messageDiv.style.display = 'block';
+        })
+        .finally(() => {
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalBtnText;
+        });
+    });
+}
+

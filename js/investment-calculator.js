@@ -32,7 +32,7 @@ function initWaitlistForm() {
         if (!emailInput || !emailInput.value) return;
 
         const email = emailInput.value;
-        const webhookUrl = 'https://6322235-kh988567.twc1.net/webhook-test/0e4e09c9-b07e-4ffd-92ae-53408372fe28';
+        const webhookUrl = 'https://6322235-kh988567.twc1.net/webhook/0e4e09c9-b07e-4ffd-92ae-53408372fe28';
 
         // Отключаем кнопку и меняем текст на время отправки
         const originalBtnText = submitBtn.textContent;

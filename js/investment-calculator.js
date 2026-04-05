@@ -12,7 +12,76 @@ document.addEventListener('DOMContentLoaded', function () {
     initMobileMenu();
     syncScenario2LoanAmount();
     syncScenario3DepositAmount();
+    initWaitlistForm();
 });
+
+/**
+ * Инициализация формы wait-list
+ */
+function initWaitlistForm() {
+    const form = document.getElementById('waitlist-form');
+    if (!form) return;
+
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const emailInput = document.getElementById('waitlist-email');
+        const messageDiv = document.getElementById('waitlist-message');
+        const submitBtn = form.querySelector('button[type="submit"]');
+        
+        if (!emailInput || !emailInput.value) return;
+
+        const email = emailInput.value;
+        const webhookUrl = 'https://6322235-kh988567.twc1.net/webhook/0e4e09c9-b07e-4ffd-92ae-53408372fe28';
+
+        // Отключаем кнопку и меняем текст на время отправки
+        const originalBtnText = submitBtn.textContent;
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Отправка...';
+        
+        // Скрываем предыдущие сообщения
+        messageDiv.style.display = 'none';
+        messageDiv.className = '';
+
+        fetch(webhookUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                email: email,
+                source: 'waitlist',
+                product: 'ai-investment-consultant',
+                page: 'investment-calculator'
+            })
+        })
+        .then(response => {
+            if (response.ok) {
+                // Успех
+                messageDiv.textContent = 'Спасибо! Мы сообщим, когда AI-консультант станет доступен.';
+                messageDiv.style.color = '#10B981'; // Изумрудный / success цвет
+                messageDiv.style.display = 'block';
+                form.reset(); // Очищаем форму
+            } else {
+                // Ошибка от сервера
+                throw new Error('Network response was not ok');
+            }
+        })
+        .catch(error => {
+            console.error('Error submitting waitlist form:', error);
+            // Ошибка сети или другая ошибка
+            messageDiv.textContent = 'Не удалось отправить заявку. Попробуйте еще раз позже.';
+            messageDiv.style.color = '#EF4444'; // Красный / error цвет
+            messageDiv.style.display = 'block';
+        })
+        .finally(() => {
+            // Возвращаем кнопку в исходное состояние
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalBtnText;
+        });
+    });
+}
 
 /**
  * Инициализация инвестиционного калькулятора

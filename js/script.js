@@ -18,6 +18,7 @@ function trackGoal(goalName) {
 document.addEventListener('DOMContentLoaded', function () {
     initModeToggle();
     initCalculator();
+    initRenterierModal();
     initMobileMenu();
     loadFromBlogWidget();
     initWaitlistForm();
@@ -114,6 +115,7 @@ function calculateResults() {
 
     // Показываем блок результатов
     showResults();
+    openRenterierModal();
 }
 
 /**
@@ -246,6 +248,54 @@ function hideResults() {
     if (resultsBasic) resultsBasic.classList.add('hidden');
     if (resultsPro) resultsPro.classList.add('hidden');
     if (waitlistSection) waitlistSection.classList.add('hidden');
+}
+
+/**
+ * Инициализация модального окна Renterier
+ */
+function initRenterierModal() {
+    const modal = document.getElementById('renterier-modal');
+    if (!modal) return;
+
+    modal.querySelectorAll('[data-modal-close]').forEach(element => {
+        element.addEventListener('click', closeRenterierModal);
+    });
+
+    const link = document.getElementById('renterier-modal-link');
+    if (link) {
+        link.addEventListener('click', function () {
+            trackGoal('renterier_click');
+        });
+    }
+
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape' && !modal.classList.contains('hidden')) {
+            closeRenterierModal();
+        }
+    });
+}
+
+/**
+ * Показать модальное окно Renterier после успешного расчёта
+ */
+function openRenterierModal() {
+    const modal = document.getElementById('renterier-modal');
+    if (!modal) return;
+
+    modal.classList.remove('hidden');
+    document.body.classList.add('modal-open');
+    trackGoal('renterier_modal_open');
+}
+
+/**
+ * Скрыть модальное окно Renterier
+ */
+function closeRenterierModal() {
+    const modal = document.getElementById('renterier-modal');
+    if (!modal) return;
+
+    modal.classList.add('hidden');
+    document.body.classList.remove('modal-open');
 }
 
 /**

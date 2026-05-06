@@ -550,6 +550,16 @@ body.modal-open {
   margin-bottom: var(--spacing-sm);
 }
 
+.modal-uplift {
+  display: inline-block;
+  margin-bottom: var(--spacing-sm);
+  padding: 0.4rem 0.75rem;
+  border-radius: 999px;
+  background: rgba(72, 187, 120, 0.12);
+  color: #2f855a;
+  font-weight: 600;
+}
+
 .modal-card p {
   max-width: 420px;
   margin-left: auto;

@@ -4,6 +4,11 @@
 
 let currentMode = 'basic';
 let cashflowChart = null; // График
+const RENTERIER_UPLIFT_PERCENT = 10;
+const RENTERIER_VARIANT_KEY = 'renterier_ab_variant';
+const RENTERIER_MODAL_SHOWN_KEY = 'renterier_modal_shown';
+const RENTERIER_BASE_URL = 'https://renterier.ru/';
+let renterierAbVariant = null;
 
 /**
  * Безопасная отправка целей в Яндекс.Метрику
@@ -11,6 +16,97 @@ let cashflowChart = null; // График
 function trackGoal(goalName) {
     if (typeof ym === 'function') {
         ym(105579895, 'reachGoal', goalName);
+    }
+}
+
+function getOrAssignRenterierVariant() {
+    if (renterierAbVariant) return renterierAbVariant;
+
+    try {
+        const savedVariant = sessionStorage.getItem(RENTERIER_VARIANT_KEY);
+        if (savedVariant === 'a' || savedVariant === 'b') {
+            renterierAbVariant = savedVariant;
+            return renterierAbVariant;
+        }
+    } catch (error) {
+        console.warn('Unable to read A/B variant from sessionStorage:', error);
+    }
+
+    renterierAbVariant = Math.random() < 0.5 ? 'a' : 'b';
+    trackGoal(`renterier_ab_assigned_${renterierAbVariant}`);
+
+    try {
+        sessionStorage.setItem(RENTERIER_VARIANT_KEY, renterierAbVariant);
+    } catch (error) {
+        console.warn('Unable to save A/B variant to sessionStorage:', error);
+    }
+
+    return renterierAbVariant;
+}
+
+function buildRenterierFunnelPayload(values, basicResults) {
+    const upliftMonthlyRub = Math.round(values.monthlyRent * (RENTERIER_UPLIFT_PERCENT / 100));
+    return {
+        price: Math.round(values.price),
+        monthlyRent: Math.round(values.monthlyRent),
+        monthlyExpenses: Math.round(values.monthlyExpenses),
+        vacancyDays: Math.round(values.vacancyDays),
+        mode: currentMode,
+        yieldPercent: Number((basicResults.yieldPercent || 0).toFixed(2)),
+        upliftPercent: RENTERIER_UPLIFT_PERCENT,
+        upliftMonthlyRub
+    };
+}
+
+function formatRenterierMoney(value) {
+    return new Intl.NumberFormat('ru-RU').format(Math.round(value || 0));
+}
+
+function buildRenterierUrl(payload, variant) {
+    const url = new URL(RENTERIER_BASE_URL);
+    url.searchParams.set('utm_source', 'rentcalc');
+    url.searchParams.set('utm_medium', 'modal');
+    url.searchParams.set('utm_campaign', 'renterier_funnel');
+    url.searchParams.set('utm_content', `variant_${variant}`);
+    url.searchParams.set('price', String(payload.price));
+    url.searchParams.set('monthly_rent', String(payload.monthlyRent));
+    url.searchParams.set('monthly_expenses', String(payload.monthlyExpenses));
+    url.searchParams.set('vacancy_days', String(payload.vacancyDays));
+    url.searchParams.set('mode', payload.mode);
+    url.searchParams.set('yield_percent', String(payload.yieldPercent));
+    url.searchParams.set('uplift_percent', String(payload.upliftPercent));
+    url.searchParams.set('uplift_monthly_rub', String(payload.upliftMonthlyRub));
+    return url.toString();
+}
+
+function updateRenterierModalContent(payload, variant) {
+    const upliftElement = document.getElementById('renterier-modal-uplift');
+    if (upliftElement) {
+        upliftElement.textContent = `Можно поднять аренду на ${payload.upliftPercent}% (≈ +${formatRenterierMoney(payload.upliftMonthlyRub)} ₽/мес)`;
+    }
+
+    const link = document.getElementById('renterier-modal-link');
+    if (link) {
+        link.href = buildRenterierUrl(payload, variant);
+    }
+}
+
+function shouldShowRenterierModal(variant) {
+    if (variant === 'a') return true;
+
+    try {
+        return sessionStorage.getItem(RENTERIER_MODAL_SHOWN_KEY) !== '1';
+    } catch (error) {
+        console.warn('Unable to read modal shown flag from sessionStorage:', error);
+        return true;
+    }
+}
+
+function markRenterierModalShown() {
+    try {
+        sessionStorage.setItem(RENTERIER_MODAL_SHOWN_KEY, '1');
+    } catch (error) {
+        console.warn('Unable to save modal shown flag to sessionStorage:', error);
     }
 }
 
@@ -86,13 +182,15 @@ function calculateResults() {
     trackGoal('calculate_click');
 
     // Получаем базовые значения
-    const price = parseFloat(document.getElementById('price').value) || 0;
-    const monthlyRent = parseFloat(document.getElementById('monthly-rent').value) || 0;
-    const monthlyExpenses = parseFloat(document.getElementById('monthly-expenses').value) || 0;
-    const vacancyDays = parseFloat(document.getElementById('vacancy-days').value) || 0;
+    const values = {
+        price: parseFloat(document.getElementById('price').value) || 0,
+        monthlyRent: parseFloat(document.getElementById('monthly-rent').value) || 0,
+        monthlyExpenses: parseFloat(document.getElementById('monthly-expenses').value) || 0,
+        vacancyDays: parseFloat(document.getElementById('vacancy-days').value) || 0
+    };
 
     // Базовый расчёт
-    const basicResults = calculateBasicYield(price, monthlyRent, monthlyExpenses, vacancyDays);
+    const basicResults = calculateBasicYield(values.price, values.monthlyRent, values.monthlyExpenses, values.vacancyDays);
 
     // Отображаем базовые результаты
     displayBasicResults(basicResults);
@@ -115,7 +213,13 @@ function calculateResults() {
 
     // Показываем блок результатов
     showResults();
-    openRenterierModal();
+
+    const funnelPayload = buildRenterierFunnelPayload(values, basicResults);
+    const variant = getOrAssignRenterierVariant();
+    updateRenterierModalContent(funnelPayload, variant);
+    if (shouldShowRenterierModal(variant)) {
+        openRenterierModal(variant);
+    }
 }
 
 /**
@@ -264,7 +368,8 @@ function initRenterierModal() {
     const link = document.getElementById('renterier-modal-link');
     if (link) {
         link.addEventListener('click', function () {
-            trackGoal('renterier_click');
+            const variant = getOrAssignRenterierVariant();
+            trackGoal(`renterier_click_${variant}`);
         });
     }
 
@@ -278,13 +383,14 @@ function initRenterierModal() {
 /**
  * Показать модальное окно Renterier после успешного расчёта
  */
-function openRenterierModal() {
+function openRenterierModal(variant) {
     const modal = document.getElementById('renterier-modal');
     if (!modal) return;
 
     modal.classList.remove('hidden');
     document.body.classList.add('modal-open');
-    trackGoal('renterier_modal_open');
+    markRenterierModalShown();
+    trackGoal(`renterier_modal_show_${variant}`);
 }
 
 /**

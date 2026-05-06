@@ -138,8 +138,12 @@ function updateRenterierModalContent(payload, variant, basicResults) {
     }
 
     const upliftElement = document.getElementById('renterier-modal-uplift');
+    const upliftValueElement = document.getElementById('renterier-modal-uplift-value');
     if (upliftElement) {
-        upliftElement.textContent = `Можно поднять аренду на ${payload.upliftPercent}% (≈ +${formatRenterierMoney(payload.upliftMonthlyRub)} ₽/мес)`;
+        upliftElement.textContent = `Можно поднять аренду на ${payload.upliftPercent}%`;
+    }
+    if (upliftValueElement) {
+        upliftValueElement.textContent = `+${formatRenterierMoney(payload.upliftMonthlyRub)} ₽/мес`;
     }
 
     const link = document.getElementById('renterier-modal-link');

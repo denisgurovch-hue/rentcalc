@@ -214,8 +214,14 @@
     <div class="modal-backdrop" data-modal-close></div>
     <div class="modal-card">
       <button type="button" class="modal-close" aria-label="Закрыть" data-modal-close>&times;</button>
-      <p class="modal-eyebrow">Следующий шаг после расчёта</p>
-      <h2 id="renterier-modal-title">Узнать как повысить стоимость аренды</h2>
+      <p class="modal-eyebrow">Ваш расчет готов</p>
+      <h2 id="renterier-modal-title">Потенциал роста аренды</h2>
+      <div class="modal-kpi">
+        <div class="modal-kpi-value" id="renterier-modal-uplift-value">+0 ₽/мес</div>
+        <p id="renterier-modal-uplift" class="modal-kpi-caption">
+          Можно поднять аренду на 10%
+        </p>
+      </div>
       <div class="modal-results">
         <h3 class="modal-results-title">Ваш результат</h3>
         <div class="modal-results-grid">
@@ -233,17 +239,12 @@
           </div>
         </div>
       </div>
-      <p id="renterier-modal-uplift" class="modal-uplift">
-        Можно поднять аренду на 10% (≈ +0 ₽/мес)
-      </p>
-      <p>
-        Проверьте, какие улучшения квартиры могут поднять арендную ставку и быстрее окупиться.
-      </p>
+      <p class="modal-note">Что влияет на рост аренды: ремонт, упаковка, фото и позиционирование.</p>
       <div class="modal-actions">
         <a href="https://renterier.ru/" class="btn btn-primary" target="_blank" rel="noopener noreferrer" id="renterier-modal-link">
-          Перейти на Renterier.ru
+          Узнать как повысить аренду
         </a>
-        <button type="button" class="btn btn-secondary" data-modal-close>Позже</button>
+        <button type="button" class="modal-later-btn" data-modal-close>Позже</button>
       </div>
     </div>
   </div>

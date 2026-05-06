@@ -547,12 +547,34 @@ body.modal-open {
 }
 
 .modal-card h2 {
-  margin-bottom: var(--spacing-sm);
+  margin-bottom: 0.45rem;
+}
+
+.modal-kpi {
+  margin: 0 auto var(--spacing-md);
+  max-width: 430px;
+  padding: 0.8rem 1rem;
+  border-radius: var(--radius-lg);
+  background: rgba(72, 187, 120, 0.12);
+}
+
+.modal-kpi-value {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #1f7a4f;
+  line-height: 1.1;
+}
+
+.modal-kpi-caption {
+  margin-top: 0.25rem;
+  color: #2f855a;
+  font-weight: 600;
+  font-size: 1rem;
 }
 
 .modal-results {
-  margin: 0 auto var(--spacing-md);
-  padding: 0.9rem;
+  margin: 0 auto var(--spacing-sm);
+  padding: 0.75rem;
   max-width: 430px;
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
@@ -560,8 +582,8 @@ body.modal-open {
 }
 
 .modal-results-title {
-  margin-bottom: 0.6rem;
-  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
 }
 
 .modal-results-grid {
@@ -573,29 +595,19 @@ body.modal-open {
 .modal-result-item {
   background: var(--bg-card);
   border-radius: var(--radius-md);
-  padding: 0.5rem;
+  padding: 0.45rem;
 }
 
 .modal-result-label {
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   color: var(--text-secondary);
   margin-bottom: 0.2rem;
 }
 
 .modal-result-value {
-  font-size: 0.92rem;
+  font-size: 0.88rem;
   font-weight: 700;
   color: var(--text-primary);
-}
-
-.modal-uplift {
-  display: inline-block;
-  margin-bottom: var(--spacing-sm);
-  padding: 0.4rem 0.75rem;
-  border-radius: 999px;
-  background: rgba(72, 187, 120, 0.12);
-  color: #2f855a;
-  font-weight: 600;
 }
 
 .modal-card p {
@@ -604,15 +616,37 @@ body.modal-open {
   margin-right: auto;
 }
 
+.modal-note {
+  margin-bottom: 0.2rem;
+}
+
 .modal-actions {
   display: flex;
   gap: var(--spacing-sm);
   justify-content: center;
   flex-wrap: wrap;
-  margin-top: var(--spacing-lg);
+  margin-top: var(--spacing-md);
+}
+
+.modal-later-btn {
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 0.75rem 0.5rem;
+  cursor: pointer;
+}
+
+.modal-later-btn:hover {
+  color: var(--text-primary);
 }
 
 @media (max-width: 560px) {
+  .modal-kpi-value {
+    font-size: 1.7rem;
+  }
+
   .modal-results-grid {
     grid-template-columns: 1fr;
   }

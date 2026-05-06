@@ -8,6 +8,7 @@ const RENTERIER_UPLIFT_PERCENT = 10;
 const RENTERIER_VARIANT_KEY = 'renterier_ab_variant';
 const RENTERIER_MODAL_SHOWN_KEY = 'renterier_modal_shown';
 const RENTERIER_BASE_URL = 'https://renterier.ru/';
+const MONEY_INPUT_IDS = ['price', 'monthly-rent', 'monthly-expenses', 'down-payment', 'loan-amount'];
 let renterierAbVariant = null;
 
 /**
@@ -17,6 +18,46 @@ function trackGoal(goalName) {
     if (typeof ym === 'function') {
         ym(105579895, 'reachGoal', goalName);
     }
+}
+
+function sanitizeMoneyValue(value) {
+    return String(value || '').replace(/\D/g, '');
+}
+
+function formatMoneyGroups(value) {
+    const digits = sanitizeMoneyValue(value);
+    return digits.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+}
+
+function parseMoneyValue(value) {
+    const digits = sanitizeMoneyValue(value);
+    return digits ? Number(digits) : 0;
+}
+
+function parseMoneyInputValue(id) {
+    const input = document.getElementById(id);
+    return parseMoneyValue(input ? input.value : '');
+}
+
+function initMoneyInputFormatting() {
+    MONEY_INPUT_IDS.forEach(id => {
+        const input = document.getElementById(id);
+        if (!input) return;
+
+        input.addEventListener('focus', function () {
+            this.value = sanitizeMoneyValue(this.value);
+        });
+
+        input.addEventListener('input', function () {
+            this.value = sanitizeMoneyValue(this.value);
+        });
+
+        input.addEventListener('blur', function () {
+            this.value = formatMoneyGroups(this.value);
+        });
+
+        input.value = formatMoneyGroups(input.value);
+    });
 }
 
 function getOrAssignRenterierVariant() {
@@ -112,6 +153,7 @@ function markRenterierModalShown() {
 
 // Инициализация при загрузке страницы
 document.addEventListener('DOMContentLoaded', function () {
+    initMoneyInputFormatting();
     initModeToggle();
     initCalculator();
     initRenterierModal();
@@ -183,9 +225,9 @@ function calculateResults() {
 
     // Получаем базовые значения
     const values = {
-        price: parseFloat(document.getElementById('price').value) || 0,
-        monthlyRent: parseFloat(document.getElementById('monthly-rent').value) || 0,
-        monthlyExpenses: parseFloat(document.getElementById('monthly-expenses').value) || 0,
+        price: parseMoneyInputValue('price'),
+        monthlyRent: parseMoneyInputValue('monthly-rent'),
+        monthlyExpenses: parseMoneyInputValue('monthly-expenses'),
         vacancyDays: parseFloat(document.getElementById('vacancy-days').value) || 0
     };
 
@@ -197,8 +239,8 @@ function calculateResults() {
 
     // Если Pro режим, делаем дополнительные расчёты
     if (currentMode === 'pro') {
-        const downPayment = parseFloat(document.getElementById('down-payment').value) || 0;
-        const loanAmount = parseFloat(document.getElementById('loan-amount').value) || 0;
+        const downPayment = parseMoneyInputValue('down-payment');
+        const loanAmount = parseMoneyInputValue('loan-amount');
         const interestRate = parseFloat(document.getElementById('interest-rate').value) || 0;
         const loanTerm = parseFloat(document.getElementById('loan-term').value) || 0;
 

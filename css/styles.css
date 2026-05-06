@@ -550,6 +550,44 @@ body.modal-open {
   margin-bottom: var(--spacing-sm);
 }
 
+.modal-results {
+  margin: 0 auto var(--spacing-md);
+  padding: 0.9rem;
+  max-width: 430px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  background: var(--bg-secondary);
+}
+
+.modal-results-title {
+  margin-bottom: 0.6rem;
+  font-size: 1rem;
+}
+
+.modal-results-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.modal-result-item {
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  padding: 0.5rem;
+}
+
+.modal-result-label {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.2rem;
+}
+
+.modal-result-value {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
 .modal-uplift {
   display: inline-block;
   margin-bottom: var(--spacing-sm);
@@ -572,6 +610,12 @@ body.modal-open {
   justify-content: center;
   flex-wrap: wrap;
   margin-top: var(--spacing-lg);
+}
+
+@media (max-width: 560px) {
+  .modal-results-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 @keyframes modal-slide-up {

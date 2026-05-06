@@ -120,7 +120,23 @@ function buildRenterierUrl(payload, variant) {
     return url.toString();
 }
 
-function updateRenterierModalContent(payload, variant) {
+function updateRenterierModalContent(payload, variant, basicResults) {
+    const monthlyProfitElement = document.getElementById('modal-result-monthly-profit');
+    const yearlyProfitElement = document.getElementById('modal-result-yearly-profit');
+    const yieldElement = document.getElementById('modal-result-yield');
+
+    if (basicResults) {
+        if (monthlyProfitElement) {
+            monthlyProfitElement.textContent = formatCurrency(basicResults.monthlyProfit);
+        }
+        if (yearlyProfitElement) {
+            yearlyProfitElement.textContent = formatCurrency(basicResults.yearlyProfit);
+        }
+        if (yieldElement) {
+            yieldElement.textContent = formatPercent(basicResults.yieldPercent);
+        }
+    }
+
     const upliftElement = document.getElementById('renterier-modal-uplift');
     if (upliftElement) {
         upliftElement.textContent = `Можно поднять аренду на ${payload.upliftPercent}% (≈ +${formatRenterierMoney(payload.upliftMonthlyRub)} ₽/мес)`;
@@ -258,7 +274,7 @@ function calculateResults() {
 
     const funnelPayload = buildRenterierFunnelPayload(values, basicResults);
     const variant = getOrAssignRenterierVariant();
-    updateRenterierModalContent(funnelPayload, variant);
+    updateRenterierModalContent(funnelPayload, variant, basicResults);
     if (shouldShowRenterierModal(variant)) {
         openRenterierModal(variant);
     }

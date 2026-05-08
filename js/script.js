@@ -28,32 +28,6 @@ function getDateForFilename(date) {
     return `${year}-${month}-${day}`;
 }
 
-function addPdfLine(doc, state, text, options = {}) {
-    const maxWidth = options.maxWidth || 170;
-    const lineHeight = options.lineHeight || 7;
-    const left = options.left || 20;
-    const pageBottom = 280;
-    const lines = doc.splitTextToSize(text, maxWidth);
-
-    if (options.spacingTop) {
-        state.y += options.spacingTop;
-    }
-
-    if (state.y + lines.length * lineHeight > pageBottom) {
-        doc.addPage();
-        state.y = 20;
-    }
-
-    if (options.bold) {
-        doc.setFont('helvetica', 'bold');
-    } else {
-        doc.setFont('helvetica', 'normal');
-    }
-
-    doc.text(lines, left, state.y);
-    state.y += lines.length * lineHeight;
-}
-
 function saveCalculationContext(values, basicResults, proResults) {
     latestCalculationContext = {
         mode: currentMode,
@@ -91,49 +65,68 @@ function downloadLatestCalculationPdf() {
         return;
     }
 
-    if (!window.jspdf || !window.jspdf.jsPDF) {
+    if (!window.pdfMake || !window.pdfMake.createPdf) {
         alert('PDF библиотека не загружена. Обновите страницу и попробуйте снова.');
         return;
     }
 
     const ctx = latestCalculationContext;
-    const doc = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4' });
-    doc.setFont('helvetica', 'normal');
+    const content = [
+        { text: 'RentCalc - Результат расчета доходности', style: 'header' },
+        { text: `Дата: ${ctx.calculatedAt.toLocaleString('ru-RU')}` },
+        { text: `Режим: ${ctx.mode === 'pro' ? 'Pro' : 'Basic'}` },
+        { text: `Источник: ${ctx.source}` },
+        { text: 'Входные параметры', style: 'section' },
+        { text: `Цена объекта: ${formatCurrency(ctx.inputs.price)}` },
+        { text: `Месячная аренда: ${formatCurrency(ctx.inputs.monthlyRent)}` },
+        { text: `Месячные расходы: ${formatCurrency(ctx.inputs.monthlyExpenses)}` },
+        { text: `Дней простоя в год: ${Math.round(ctx.inputs.vacancyDays)}` },
+        { text: 'Базовые результаты', style: 'section' },
+        { text: `Месячная прибыль: ${formatCurrency(ctx.basic.monthlyProfit)}` },
+        { text: `Годовая прибыль: ${formatCurrency(ctx.basic.yearlyProfit)}` },
+        { text: `Доходность: ${formatPercent(ctx.basic.yieldPercent)}` },
+        { text: 'Результаты Pro', style: 'section' }
+    ];
 
-    const state = { y: 20 };
-
-    addPdfLine(doc, state, 'RentCalc - Результат расчета доходности', { bold: true, lineHeight: 8 });
-    addPdfLine(doc, state, `Дата: ${ctx.calculatedAt.toLocaleString('ru-RU')}`, { spacingTop: 3 });
-    addPdfLine(doc, state, `Режим: ${ctx.mode === 'pro' ? 'Pro' : 'Basic'}`);
-    addPdfLine(doc, state, `Источник: ${ctx.source}`);
-
-    addPdfLine(doc, state, 'Входные параметры', { bold: true, spacingTop: 6 });
-    addPdfLine(doc, state, `Цена объекта: ${formatCurrency(ctx.inputs.price)}`);
-    addPdfLine(doc, state, `Месячная аренда: ${formatCurrency(ctx.inputs.monthlyRent)}`);
-    addPdfLine(doc, state, `Месячные расходы: ${formatCurrency(ctx.inputs.monthlyExpenses)}`);
-    addPdfLine(doc, state, `Дней простоя в год: ${Math.round(ctx.inputs.vacancyDays)}`);
-
-    addPdfLine(doc, state, 'Базовые результаты', { bold: true, spacingTop: 6 });
-    addPdfLine(doc, state, `Месячная прибыль: ${formatCurrency(ctx.basic.monthlyProfit)}`);
-    addPdfLine(doc, state, `Годовая прибыль: ${formatCurrency(ctx.basic.yearlyProfit)}`);
-    addPdfLine(doc, state, `Доходность: ${formatPercent(ctx.basic.yieldPercent)}`);
-
-    addPdfLine(doc, state, 'Результаты Pro', { bold: true, spacingTop: 6 });
     if (ctx.pro) {
-        addPdfLine(doc, state, `Первоначальный взнос: ${formatCurrency(ctx.inputs.downPayment)}`);
-        addPdfLine(doc, state, `Сумма кредита: ${formatCurrency(ctx.inputs.loanAmount)}`);
-        addPdfLine(doc, state, `Ставка по ипотеке: ${ctx.inputs.interestRate}%`);
-        addPdfLine(doc, state, `Срок кредита: ${ctx.inputs.loanTerm} лет`);
-        addPdfLine(doc, state, `Платеж по ипотеке: ${formatCurrency(ctx.pro.mortgagePayment)}`);
-        addPdfLine(doc, state, `Денежный поток в год: ${formatCurrency(ctx.pro.yearlyCashFlow)}`);
-        addPdfLine(doc, state, `Cash-on-Cash: ${formatPercent(ctx.pro.cashOnCashReturn)}`);
-        addPdfLine(doc, state, `NPV: ${formatCurrency(ctx.pro.npv)}`);
+        content.push(
+            { text: `Первоначальный взнос: ${formatCurrency(ctx.inputs.downPayment)}` },
+            { text: `Сумма кредита: ${formatCurrency(ctx.inputs.loanAmount)}` },
+            { text: `Ставка по ипотеке: ${ctx.inputs.interestRate}%` },
+            { text: `Срок кредита: ${ctx.inputs.loanTerm} лет` },
+            { text: `Платеж по ипотеке: ${formatCurrency(ctx.pro.mortgagePayment)}` },
+            { text: `Денежный поток в год: ${formatCurrency(ctx.pro.yearlyCashFlow)}` },
+            { text: `Cash-on-Cash: ${formatPercent(ctx.pro.cashOnCashReturn)}` },
+            { text: `NPV: ${formatCurrency(ctx.pro.npv)}` }
+        );
     } else {
-        addPdfLine(doc, state, 'Режим Pro не использовался.');
+        content.push({ text: 'Режим Pro не использовался.' });
     }
 
+    const docDefinition = {
+        pageSize: 'A4',
+        pageMargins: [40, 40, 40, 40],
+        defaultStyle: {
+            font: 'Roboto',
+            fontSize: 11
+        },
+        styles: {
+            header: {
+                fontSize: 16,
+                bold: true,
+                margin: [0, 0, 0, 10]
+            },
+            section: {
+                fontSize: 13,
+                bold: true,
+                margin: [0, 10, 0, 6]
+            }
+        },
+        content
+    };
+
     const fileDate = getDateForFilename(ctx.calculatedAt);
-    doc.save(`rentcalc-result-${fileDate}.pdf`);
+    window.pdfMake.createPdf(docDefinition).download(`rentcalc-result-${fileDate}.pdf`);
 }
 
 function sanitizeMoneyValue(value) {

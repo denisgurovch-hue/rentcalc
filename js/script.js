@@ -10,6 +10,7 @@ const RENTERIER_MODAL_SHOWN_KEY = 'renterier_modal_shown';
 const RENTERIER_BASE_URL = 'https://renterier.ru/';
 const MONEY_INPUT_IDS = ['price', 'monthly-rent', 'monthly-expenses', 'down-payment', 'loan-amount'];
 let renterierAbVariant = null;
+let latestCalculationContext = null;
 
 /**
  * Безопасная отправка целей в Яндекс.Метрику
@@ -18,6 +19,121 @@ function trackGoal(goalName) {
     if (typeof ym === 'function') {
         ym(105579895, 'reachGoal', goalName);
     }
+}
+
+function getDateForFilename(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
+function addPdfLine(doc, state, text, options = {}) {
+    const maxWidth = options.maxWidth || 170;
+    const lineHeight = options.lineHeight || 7;
+    const left = options.left || 20;
+    const pageBottom = 280;
+    const lines = doc.splitTextToSize(text, maxWidth);
+
+    if (options.spacingTop) {
+        state.y += options.spacingTop;
+    }
+
+    if (state.y + lines.length * lineHeight > pageBottom) {
+        doc.addPage();
+        state.y = 20;
+    }
+
+    if (options.bold) {
+        doc.setFont('helvetica', 'bold');
+    } else {
+        doc.setFont('helvetica', 'normal');
+    }
+
+    doc.text(lines, left, state.y);
+    state.y += lines.length * lineHeight;
+}
+
+function saveCalculationContext(values, basicResults, proResults) {
+    latestCalculationContext = {
+        mode: currentMode,
+        source: 'https://rentcalc.ru',
+        calculatedAt: new Date(),
+        inputs: {
+            price: values.price,
+            monthlyRent: values.monthlyRent,
+            monthlyExpenses: values.monthlyExpenses,
+            vacancyDays: values.vacancyDays,
+            downPayment: proResults?.downPayment ?? null,
+            loanAmount: proResults?.loanAmount ?? null,
+            interestRate: proResults?.interestRate ?? null,
+            loanTerm: proResults?.loanTerm ?? null
+        },
+        basic: {
+            monthlyProfit: basicResults.monthlyProfit,
+            yearlyProfit: basicResults.yearlyProfit,
+            yieldPercent: basicResults.yieldPercent
+        },
+        pro: proResults
+            ? {
+                mortgagePayment: proResults.mortgagePayment,
+                yearlyCashFlow: proResults.yearlyCashFlow,
+                cashOnCashReturn: proResults.cashOnCashReturn,
+                npv: proResults.npv
+            }
+            : null
+    };
+}
+
+function downloadLatestCalculationPdf() {
+    if (!latestCalculationContext) {
+        alert('Сначала выполните расчет, затем скачайте PDF.');
+        return;
+    }
+
+    if (!window.jspdf || !window.jspdf.jsPDF) {
+        alert('PDF библиотека не загружена. Обновите страницу и попробуйте снова.');
+        return;
+    }
+
+    const ctx = latestCalculationContext;
+    const doc = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4' });
+    doc.setFont('helvetica', 'normal');
+
+    const state = { y: 20 };
+
+    addPdfLine(doc, state, 'RentCalc - Результат расчета доходности', { bold: true, lineHeight: 8 });
+    addPdfLine(doc, state, `Дата: ${ctx.calculatedAt.toLocaleString('ru-RU')}`, { spacingTop: 3 });
+    addPdfLine(doc, state, `Режим: ${ctx.mode === 'pro' ? 'Pro' : 'Basic'}`);
+    addPdfLine(doc, state, `Источник: ${ctx.source}`);
+
+    addPdfLine(doc, state, 'Входные параметры', { bold: true, spacingTop: 6 });
+    addPdfLine(doc, state, `Цена объекта: ${formatCurrency(ctx.inputs.price)}`);
+    addPdfLine(doc, state, `Месячная аренда: ${formatCurrency(ctx.inputs.monthlyRent)}`);
+    addPdfLine(doc, state, `Месячные расходы: ${formatCurrency(ctx.inputs.monthlyExpenses)}`);
+    addPdfLine(doc, state, `Дней простоя в год: ${Math.round(ctx.inputs.vacancyDays)}`);
+
+    addPdfLine(doc, state, 'Базовые результаты', { bold: true, spacingTop: 6 });
+    addPdfLine(doc, state, `Месячная прибыль: ${formatCurrency(ctx.basic.monthlyProfit)}`);
+    addPdfLine(doc, state, `Годовая прибыль: ${formatCurrency(ctx.basic.yearlyProfit)}`);
+    addPdfLine(doc, state, `Доходность: ${formatPercent(ctx.basic.yieldPercent)}`);
+
+    addPdfLine(doc, state, 'Результаты Pro', { bold: true, spacingTop: 6 });
+    if (ctx.pro) {
+        addPdfLine(doc, state, `Первоначальный взнос: ${formatCurrency(ctx.inputs.downPayment)}`);
+        addPdfLine(doc, state, `Сумма кредита: ${formatCurrency(ctx.inputs.loanAmount)}`);
+        addPdfLine(doc, state, `Ставка по ипотеке: ${ctx.inputs.interestRate}%`);
+        addPdfLine(doc, state, `Срок кредита: ${ctx.inputs.loanTerm} лет`);
+        addPdfLine(doc, state, `Платеж по ипотеке: ${formatCurrency(ctx.pro.mortgagePayment)}`);
+        addPdfLine(doc, state, `Денежный поток в год: ${formatCurrency(ctx.pro.yearlyCashFlow)}`);
+        addPdfLine(doc, state, `Cash-on-Cash: ${formatPercent(ctx.pro.cashOnCashReturn)}`);
+        addPdfLine(doc, state, `NPV: ${formatCurrency(ctx.pro.npv)}`);
+    } else {
+        addPdfLine(doc, state, 'Режим Pro не использовался.');
+    }
+
+    const fileDate = getDateForFilename(ctx.calculatedAt);
+    doc.save(`rentcalc-result-${fileDate}.pdf`);
 }
 
 function sanitizeMoneyValue(value) {
@@ -257,6 +373,8 @@ function calculateResults() {
     // Отображаем базовые результаты
     displayBasicResults(basicResults);
 
+    let proResults = null;
+
     // Если Pro режим, делаем дополнительные расчёты
     if (currentMode === 'pro') {
         const downPayment = parseMoneyInputValue('down-payment');
@@ -271,10 +389,21 @@ function calculateResults() {
         const npv = calculateNPV(cocResults.yearlyCashFlow, downPayment, 10, 8);
 
         displayProResults(mortgagePayment, cocResults, npv);
+        proResults = {
+            downPayment,
+            loanAmount,
+            interestRate,
+            loanTerm,
+            mortgagePayment,
+            yearlyCashFlow: cocResults.yearlyCashFlow,
+            cashOnCashReturn: cocResults.cashOnCashReturn,
+            npv
+        };
     }
 
     // Показываем блок результатов
     showResults();
+    saveCalculationContext(values, basicResults, proResults);
 
     const funnelPayload = buildRenterierFunnelPayload(values, basicResults);
     const variant = getOrAssignRenterierVariant();
@@ -432,6 +561,14 @@ function initRenterierModal() {
         link.addEventListener('click', function () {
             const variant = getOrAssignRenterierVariant();
             trackGoal(`renterier_click_${variant}`);
+        });
+    }
+
+    const pdfButton = document.getElementById('renterier-download-pdf-btn');
+    if (pdfButton) {
+        pdfButton.addEventListener('click', function () {
+            trackGoal('renterier_pdf_download_click');
+            downloadLatestCalculationPdf();
         });
     }
 

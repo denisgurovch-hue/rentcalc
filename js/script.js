@@ -71,58 +71,141 @@ function downloadLatestCalculationPdf() {
     }
 
     const ctx = latestCalculationContext;
-    const content = [
-        { text: 'RentCalc - Результат расчета доходности', style: 'header' },
-        { text: `Дата: ${ctx.calculatedAt.toLocaleString('ru-RU')}` },
-        { text: `Режим: ${ctx.mode === 'pro' ? 'Pro' : 'Basic'}` },
-        { text: `Источник: ${ctx.source}` },
-        { text: 'Входные параметры', style: 'section' },
-        { text: `Цена объекта: ${formatCurrency(ctx.inputs.price)}` },
-        { text: `Месячная аренда: ${formatCurrency(ctx.inputs.monthlyRent)}` },
-        { text: `Месячные расходы: ${formatCurrency(ctx.inputs.monthlyExpenses)}` },
-        { text: `Дней простоя в год: ${Math.round(ctx.inputs.vacancyDays)}` },
-        { text: 'Базовые результаты', style: 'section' },
-        { text: `Месячная прибыль: ${formatCurrency(ctx.basic.monthlyProfit)}` },
-        { text: `Годовая прибыль: ${formatCurrency(ctx.basic.yearlyProfit)}` },
-        { text: `Доходность: ${formatPercent(ctx.basic.yieldPercent)}` },
-        { text: 'Результаты Pro', style: 'section' }
+    const reportDate = ctx.calculatedAt.toLocaleString('ru-RU');
+    const modeLabel = ctx.mode === 'pro' ? 'Pro' : 'Basic';
+
+    const basicKpi = [
+        { title: 'Месячная прибыль', value: formatCurrency(ctx.basic.monthlyProfit) },
+        { title: 'Годовая прибыль', value: formatCurrency(ctx.basic.yearlyProfit) },
+        { title: 'Доходность', value: formatPercent(ctx.basic.yieldPercent) }
     ];
 
-    if (ctx.pro) {
-        content.push(
-            { text: `Первоначальный взнос: ${formatCurrency(ctx.inputs.downPayment)}` },
-            { text: `Сумма кредита: ${formatCurrency(ctx.inputs.loanAmount)}` },
-            { text: `Ставка по ипотеке: ${ctx.inputs.interestRate}%` },
-            { text: `Срок кредита: ${ctx.inputs.loanTerm} лет` },
-            { text: `Платеж по ипотеке: ${formatCurrency(ctx.pro.mortgagePayment)}` },
-            { text: `Денежный поток в год: ${formatCurrency(ctx.pro.yearlyCashFlow)}` },
-            { text: `Cash-on-Cash: ${formatPercent(ctx.pro.cashOnCashReturn)}` },
-            { text: `NPV: ${formatCurrency(ctx.pro.npv)}` }
-        );
-    } else {
-        content.push({ text: 'Режим Pro не использовался.' });
-    }
+    const inputRows = [
+        ['Цена объекта', formatCurrency(ctx.inputs.price)],
+        ['Месячная аренда', formatCurrency(ctx.inputs.monthlyRent)],
+        ['Месячные расходы', formatCurrency(ctx.inputs.monthlyExpenses)],
+        ['Дней простоя в год', `${Math.round(ctx.inputs.vacancyDays)}`]
+    ];
+
+    const basicRows = [
+        ['Месячная прибыль', formatCurrency(ctx.basic.monthlyProfit)],
+        ['Годовая прибыль', formatCurrency(ctx.basic.yearlyProfit)],
+        ['Доходность', formatPercent(ctx.basic.yieldPercent)]
+    ];
+
+    const proRows = ctx.pro
+        ? [
+            ['Первоначальный взнос', formatCurrency(ctx.inputs.downPayment)],
+            ['Сумма кредита', formatCurrency(ctx.inputs.loanAmount)],
+            ['Ставка по ипотеке', `${ctx.inputs.interestRate}%`],
+            ['Срок кредита', `${ctx.inputs.loanTerm} лет`],
+            ['Платеж по ипотеке', formatCurrency(ctx.pro.mortgagePayment)],
+            ['Денежный поток в год', formatCurrency(ctx.pro.yearlyCashFlow)],
+            ['Cash-on-Cash', formatPercent(ctx.pro.cashOnCashReturn)],
+            ['NPV', formatCurrency(ctx.pro.npv)]
+        ]
+        : [['Статус', 'Режим Pro не использовался']];
+
+    const tableBody = (rows) => [
+        [
+            { text: 'Параметр', style: 'th' },
+            { text: 'Значение', style: 'th' }
+        ],
+        ...rows.map(([k, v]) => [{ text: k, style: 'tdKey' }, { text: v, style: 'tdVal' }])
+    ];
 
     const docDefinition = {
         pageSize: 'A4',
-        pageMargins: [40, 40, 40, 40],
+        pageMargins: [36, 40, 36, 44],
+        header(currentPage, pageCount) {
+            return {
+                margin: [36, 16, 36, 0],
+                columns: [
+                    { text: 'RentCalc', style: 'headerBrand' },
+                    { text: `Стр. ${currentPage} / ${pageCount}`, alignment: 'right', style: 'headerMeta' }
+                ]
+            };
+        },
+        footer() {
+            return {
+                margin: [36, 0, 36, 16],
+                columns: [
+                    { text: 'Сгенерировано в RentCalc', style: 'footerText' },
+                    { text: 'https://rentcalc.ru', alignment: 'right', style: 'footerText' }
+                ]
+            };
+        },
         defaultStyle: {
             font: 'Roboto',
-            fontSize: 11
+            fontSize: 10
         },
         styles: {
-            header: {
-                fontSize: 16,
-                bold: true,
-                margin: [0, 0, 0, 10]
-            },
-            section: {
-                fontSize: 13,
-                bold: true,
-                margin: [0, 10, 0, 6]
-            }
+            headerBrand: { fontSize: 10, bold: true, color: '#1F2A44' },
+            headerMeta: { fontSize: 9, color: '#6B7280' },
+            footerText: { fontSize: 8, color: '#9CA3AF' },
+            heroTitle: { fontSize: 18, bold: true, color: '#1F2A44' },
+            heroMeta: { fontSize: 10, color: '#4B5563', margin: [0, 6, 0, 0] },
+            sectionTitle: { fontSize: 13, bold: true, color: '#24324A', margin: [0, 2, 0, 6] },
+            kpiLabel: { fontSize: 9, color: '#6B7280', margin: [8, 8, 8, 2] },
+            kpiValue: { fontSize: 14, bold: true, color: '#111827', margin: [8, 0, 8, 8] },
+            th: { fontSize: 10, bold: true, color: '#374151', fillColor: '#F3F4F6' },
+            tdKey: { fontSize: 10, color: '#374151' },
+            tdVal: { fontSize: 10, bold: true, color: '#111827' },
+            note: { fontSize: 9, color: '#6B7280', italics: true }
         },
-        content
+        content: [
+            {
+                table: {
+                    widths: ['*'],
+                    body: [[{
+                        stack: [
+                            { text: 'Отчёт по доходности аренды', style: 'heroTitle' },
+                            { text: `Дата: ${reportDate}   |   Режим: ${modeLabel}   |   Источник: ${ctx.source}`, style: 'heroMeta' }
+                        ],
+                        fillColor: '#F5F7FF',
+                        margin: [12, 10, 12, 10],
+                        border: [false, false, false, false]
+                    }]]
+                },
+                layout: 'noBorders',
+                margin: [0, 0, 0, 14]
+            },
+            {
+                columns: basicKpi.map((k, idx) => ({
+                    width: '*',
+                    stack: [
+                        { text: k.title, style: 'kpiLabel' },
+                        { text: k.value, style: 'kpiValue' }
+                    ],
+                    margin: idx === basicKpi.length - 1 ? [0, 0, 0, 0] : [0, 0, 8, 0],
+                    fillColor: '#FAFBFF'
+                })),
+                columnGap: 8,
+                margin: [0, 0, 0, 14]
+            },
+            { text: 'Входные параметры', style: 'sectionTitle' },
+            {
+                table: { widths: ['58%', '42%'], body: tableBody(inputRows) },
+                layout: 'lightHorizontalLines',
+                margin: [0, 0, 0, 12]
+            },
+            { text: 'Результаты Basic', style: 'sectionTitle' },
+            {
+                table: { widths: ['58%', '42%'], body: tableBody(basicRows) },
+                layout: 'lightHorizontalLines',
+                margin: [0, 0, 0, 12]
+            },
+            { text: 'Результаты Pro', style: 'sectionTitle' },
+            {
+                table: { widths: ['58%', '42%'], body: tableBody(proRows) },
+                layout: 'lightHorizontalLines',
+                margin: [0, 0, 0, 14]
+            },
+            {
+                text: 'Примечание: расчёт носит информационный характер и не является финансовой рекомендацией.',
+                style: 'note'
+            }
+        ]
     };
 
     const fileDate = getDateForFilename(ctx.calculatedAt);
